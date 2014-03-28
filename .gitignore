@@ -1,8 +1,13 @@
+Darwin_qt/
 Linux_qt/
+QtGui/Darwin/
 QtGui/Linux/
+QtGui/QtMakefile.Darwin
 QtGui/QtMakefile.Linux
+QtSerial/Darwin/
 QtSerial/Linux/
 QtSerial/QtMakefile.Linux
+QtSerial/QtMakefile.Darwin
 catalogues.h
 charmap.c
 charset7.h

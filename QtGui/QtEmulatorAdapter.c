@@ -74,15 +74,7 @@ static int hshift_locked=0;
 
 enum shifts shift_down()
 {
-	if(fshift_locked)
-	{
-		return SHIFT_F;
-	}
-	else if(gshift_locked)
-	{
-		return SHIFT_G;
-	}
-	else if(hshift_locked)
+	if(hshift_locked)
 	{
 		return SHIFT_H;
 	}
