@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -666,7 +666,7 @@ enum {
 #endif
         NUM_MONADIC     // Last entry defines number of operations
 };
-    
+
 // Dyadic functions
 enum {
         OP_POW = 0,
@@ -736,7 +736,7 @@ enum {
         OP_MULMOD, OP_EXPMOD,
 #endif
         NUM_TRIADIC     // Last entry defines number of operations
-};  
+};
 
 // Niladic functions
 enum nilop {
@@ -745,7 +745,7 @@ enum nilop {
         OP_RDOWN, OP_RUP, OP_CRDOWN, OP_CRUP,
         OP_CENTER, OP_FILL, OP_CFILL, OP_DROP, OP_DROPXY,
         OP_sigmaX2Y, OP_sigmaX2, OP_sigmaY2, OP_sigmaXY,
-        OP_sigmaX, OP_sigmaY, 
+        OP_sigmaX, OP_sigmaY,
         OP_sigmalnX, OP_sigmalnXlnX, OP_sigmalnY, OP_sigmalnYlnY,
         OP_sigmalnXlnY, OP_sigmaXlnY, OP_sigmaYlnX,
         OP_sigmaN,
@@ -812,13 +812,13 @@ enum nilop {
 #endif
         OP_SENDP, OP_SENDR, OP_SENDsigma, OP_SENDA,
 
-        // Not programmable     
+        // Not programmable
         OP_RECV,
         OP_SAVE, OP_LOAD,
-        OP_LOADST, 
+        OP_LOADST,
         OP_LOADP, OP_PRCL, OP_PSTO,
 
-        OP_LOADR, OP_LOADsigma, 
+        OP_LOADR, OP_LOADsigma,
         OP_DBLON, OP_DBLOFF, OP_ISDBL, OP_cmplxI,
 
         OP_DATE_TO,
@@ -871,7 +871,7 @@ enum rarg {
         RARG_TEST_EQ, RARG_TEST_NE, RARG_TEST_APX,      /* Must be in the same order as enum tst_op */
                         RARG_TEST_LT, RARG_TEST_LE,
                         RARG_TEST_GT, RARG_TEST_GE,
-                        
+
         RARG_TEST_ZEQ, RARG_TEST_ZNE, //RARG_TEST_ZAPX,
         RARG_SKIP, RARG_BACK, RARG_BSF, RARG_BSB,
         RARG_DSE, RARG_ISG,
@@ -939,19 +939,19 @@ enum rarg {
         RARG_IND_CONST_CMPLX,
 #endif
         /* INFRARED commands */
-        RARG_PRINT_REG, RARG_PRINT_BYTE, RARG_PRINT_CHAR, RARG_PRINT_TAB, 
+        RARG_PRINT_REG, RARG_PRINT_BYTE, RARG_PRINT_CHAR, RARG_PRINT_TAB,
         RARG_PMODE, RARG_PDELAY,
         RARG_PRINT_CMPLX,
 #ifdef INCLUDE_PLOTTING
-        RARG_PLOT_INIT, RARG_PLOT_DIM, 
+        RARG_PLOT_INIT, RARG_PLOT_DIM,
         RARG_PLOT_SETPIX, RARG_PLOT_CLRPIX, RARG_PLOT_FLIPPIX, RARG_PLOT_ISSET,
         RARG_PLOT_DISPLAY, RARG_PLOT_PRINT,
 #endif
         /* end of INFRARED commands */
 
-        // Indirect SKIP/BACK 
+        // Indirect SKIP/BACK
         // Only the first of this group is used in XROM
-        RARG_CASE, 
+        RARG_CASE,
 #ifdef INCLUDE_INDIRECT_BRANCHES
         RARG_iBACK, RARG_iBSF, RARG_iBSB,
 #endif
@@ -977,7 +977,7 @@ enum specials {
 
         // These are pseudo ops that don't actually do anything outside the keyboard handler
         OP_WINDOWLEFT, OP_WINDOWRIGHT, OP_SHOW, OP_SST, OP_BST, OP_BACKSPACE,
-        OP_RUNNING, OP_IGNORE, OP_UNFINISHED, 
+        OP_RUNNING, OP_IGNORE, OP_UNFINISHED,
         NUM_SPECIAL
 };
 
@@ -1038,7 +1038,7 @@ enum sigma_modes {
         SIGMA_QUIET_LINEAR,     SIGMA_QUIET_POWER
 };
 
-enum catalogues 
+enum catalogues
 {
         CATALOGUE_NONE=0,
         CATALOGUE_NORMAL,
@@ -1053,7 +1053,7 @@ enum catalogues
         CATALOGUE_ALPHA,
         CATALOGUE_ALPHA_SYMBOLS,
         CATALOGUE_ALPHA_COMPARES,
-        CATALOGUE_ALPHA_ARROWS, 
+        CATALOGUE_ALPHA_ARROWS,
         CATALOGUE_ALPHA_LETTERS,
         CATALOGUE_ALPHA_SUBSCRIPTS,
         CATALOGUE_CONST,
@@ -1075,8 +1075,8 @@ enum catalogues
 // annunciators() in display.c depends on SHIFT_[NFGH] having the values 0, 1, 2 and 3.
 enum shifts {
         SHIFT_N = 0,
-        SHIFT_F, SHIFT_G, SHIFT_H,
-        SHIFT_LC_N, SHIFT_LC_G          // Two lower case planes
+        SHIFT_H,
+        SHIFT_LC_N,                     // Lower case plane
 };
 
 
@@ -1232,7 +1232,7 @@ extern void clr_user_flag(int);
 #define set_user_flag(n) cmdflag(n, RARG_SF)
 #define clr_user_flag(n) cmdflag(n, RARG_CF)
 #endif
-        
+
 extern void *xcopy(void *, const void *, int);
 extern void *xset(void *, const char, int);
 extern char *find_char(const char *, const char);

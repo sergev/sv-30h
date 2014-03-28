@@ -1,21 +1,21 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "features.h"
-#include "xeq.h" 
+#include "xeq.h"
 #include "storage.h"
 #include "display.h"
 #include "lcd.h"
@@ -115,13 +115,13 @@ static void set_separator_decimal_modes(void) {
  * top line, the second in the bottom.  If the second is empty, "Error"
  * is displayed instead.  To get a blank lower line, include a space.
  */
-void error_message(const unsigned int e) 
+void error_message(const unsigned int e)
 {
-#define MSG1(top) top "\0" 
+#define MSG1(top) top "\0"
 #define MSG2(top,bottom) top "\0" bottom
 
 	// NB: this MUST be in the same order as the error #defines in errors.h
-	static const char *const error_table[] = 
+	static const char *const error_table[] =
 	{
 		// manually get the order correct!
 		MSG2("Running", "ProGraMm"),
@@ -782,7 +782,7 @@ static void disp_x(const char *p) {
 
 		for (i=0; *p != '\0' && *p != 'E'; p++) {
 		if (*p == '.') {
-				if (gotdot == -1) 
+				if (gotdot == -1)
 					gotdot = i;
 #if defined(INCLUDE_DOUBLEDOT_FRACTIONS)
 					if ( ( *(p+1) == '.' ) || ( i != gotdot ) ) {
@@ -801,14 +801,14 @@ static void disp_x(const char *p) {
 //							i += SEGS_PER_DIGIT;
 						}
 					}
-						
+
 #else
 				if (i > 0)
 					set_decimal(i - SEGS_PER_DIGIT, DecimalMode, CNULL);
 				else {
 					set_dig(i, '0');
 					set_decimal(i, DecimalMode, CNULL);
-					i += SEGS_PER_DIGIT;	
+					i += SEGS_PER_DIGIT;
 			}
 #endif
 		} else {
@@ -836,7 +836,7 @@ static void disp_x(const char *p) {
 				}
 			}
 			set_exp(s_to_i(p), 1, CNULL);
-		} 
+		}
 	}
 }
 
@@ -924,12 +924,12 @@ static void set_int_x(const long long int value, char *res) {
 		set_separator_decimal_modes();
 
 		// Allows configuration of digit grouping per base
-		static const char grouping[] = 
-			{       0x84, 0xb3, 0xb4, 0xb3, 0xb3, 0xb3, 0xb3, 
+		static const char grouping[] =
+			{       0x84, 0xb3, 0xb4, 0xb3, 0xb3, 0xb3, 0xb3,
 		      //	   2     3     4     5     6     7     8
 		          0xb3, 0xb3, 0xb3, 0xb3, 0xb3, 0xb3, 0xb3, 0xb2 };
 		      //     9    10    11    12    13    14    15    16
-		const int shift = SeparatorMode == SEP_NONE ? 12 
+		const int shift = SeparatorMode == SEP_NONE ? 12
 			        : grouping[b - 2] >> 4;
 		const int group = SeparatorMode == SEP_NONE ? 16
 				: (grouping[b - 2] & 0xf);
@@ -1189,7 +1189,7 @@ enum display_modes std_round_fix(const decNumber *z, int *dd) {
 		min_pos_exp = 12;
 		max_neg_exp = 0 - UState.dispdigs;
 	}
- 
+
 	dn_abs(&c, z); // c is abs(z)
 	true_exp = c.exponent + c.digits - 1;
 
@@ -1199,7 +1199,7 @@ enum display_modes std_round_fix(const decNumber *z, int *dd) {
 
 	if ((true_exp < x) && (true_exp > max_neg_exp)) { // decimals needed; *dd adjusted to provide correct number
 		*dd += -true_exp;
- 		return MODE_FIX; 
+ 		return MODE_FIX;
 	}
 
 	if ((true_exp <= max_neg_exp) || (true_exp >= min_pos_exp)) {
@@ -1311,7 +1311,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 	if (mode != MODE_STD && dd > *display_digits)
 		dd = *display_digits;
 #endif
-		
+
 	set_separator_decimal_modes();
 #if defined(INCLUDE_YREG_CODE)
 	if ( !res ) { // no hms or fraction displays for the dot matrix display
@@ -1325,7 +1325,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 					return;
 			}
 		}
-	}		
+	}
 #else
 	if (!State2.smode && ! State2.cmplx && ! State2.wascomplex) {
 		if (State2.hms) {
@@ -1464,7 +1464,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 	p = mantissa;
 	switch (mode) {
 	default:
-	case MODE_STD:   
+	case MODE_STD:
 		for (count = *display_digits; mantissa[count] == '0'; count--);
 		if (count != *display_digits)
 			count++;
@@ -1557,7 +1557,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 				obp--;
 				odig--;
 			}
-#endif			
+#endif
 		break;
 
 	case MODE_ENG:
@@ -1596,7 +1596,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 			obp--;
 			odig--;
 		}
-#endif	
+#endif
 	/* Finally, send the output to the display */
 	*obp = '\0';
 	if (odig > *display_digits)
@@ -1713,7 +1713,7 @@ static void show_status(void) {
 		int end;
 		int group = 10;
 		int start = 0;
-		
+
 		if (status <= 9) {
 			base = 10 * status;
 			end = base >= 70 ? 99 : base + 29;
@@ -1813,13 +1813,13 @@ static void show_label(void) {
 static void show_registers(void) {
 	char buf[16], *bp;
 	int n = State2.digval;
-	
+
 #ifdef INCLUDE_FLASH_RECALL
-	const int reg = State2.digval2 ? FLASH_REG_BASE + n : 
-			State2.local   ? LOCAL_REG_BASE + n : 
+	const int reg = State2.digval2 ? FLASH_REG_BASE + n :
+			State2.local   ? LOCAL_REG_BASE + n :
 			n;
 #else
-	const int reg = State2.local   ? LOCAL_REG_BASE + n : 
+	const int reg = State2.local   ? LOCAL_REG_BASE + n :
 			n;
 #endif
 
@@ -1962,12 +1962,9 @@ void display(void) {
 		if (State2.dot) {
 			*bp++ = 's';
 			*bp++ = '_';
-		} else if (shift == SHIFT_F) {
-			*bp++ = '\021';
-			*bp++ = '_';
 		} else {
-			/* const int maxdigits = State2.shuffle ? 4 
-						: State2.ind ? 2 
+			/* const int maxdigits = State2.shuffle ? 4
+						: State2.ind ? 2
 						: num_arg_digits(CmdBase); */
 			if (State2.local)
 				*bp++ = '.';
@@ -2083,7 +2080,7 @@ void display(void) {
 				}
 			} else {
 				if (shift != SHIFT_N) {
-					*bp++ = 021 + shift - SHIFT_F;
+					*bp++ = 021 + shift - SHIFT_H;
 					*bp++ = '\0';
 				}
 				set_status_right(buf);
@@ -2139,7 +2136,7 @@ nostk:	show_flags();
 			const int n = nLIB(pc);
 			xset(buf, '\0', sizeof(buf));
 			set_exp(ProgFree, 1, CNULL);
-			num_arg_0(scopy_spc(buf, n == 0 ? S7_STEP : libname[n]), 
+			num_arg_0(scopy_spc(buf, n == 0 ? S7_STEP : libname[n]),
 				  upc, 3 + (n & 1));  // 4 digits in ROM and Library
 			set_digits_string(buf, SEGS_PER_DIGIT);
 #ifndef REALBUILD
@@ -2168,7 +2165,7 @@ nostk:	show_flags();
 	}
 
 	// disp_temp disables the <- key
-	State2.disp_temp = ! ShowRPN && State2.runmode 
+	State2.disp_temp = ! ShowRPN && State2.runmode
 		           && (! State2.registerlist || State2.smode == SDISP_SHOW || State2.disp_as_alpha);
 
 #if defined(INCLUDE_YREG_CODE)
@@ -2461,5 +2458,3 @@ static void set_status_right(const char *str) {
 	}
 	set_status_sized(p+1, toolarge);
 }
-
-

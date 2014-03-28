@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -63,7 +63,7 @@ FLAG NonProgrammable;
 
 /*
  *  Needed before definition
- */ 
+ */
 static unsigned int advance_to_next_label(unsigned int pc, int inc, int search_end);
 
 /*
@@ -107,12 +107,12 @@ static int keycode_to_linear(const keycode c)
 {
 	static const unsigned char linear_key_map[ 7 * 6 - 1 ] = {
 		 0,  1,  2,  3,  4,  5,   // K00 - K05
-		 6,  7,  8, 34, 34, 34,   // K10 - K15
-		 9, 10, 11, 12, 13,  0,   // K20 - K24
-		14, 15, 16, 17, 18,  0,   // K30 - K34
-		19, 20, 21, 22, 23,  0,   // K40 - K44
-		24, 25, 26, 27, 28,  0,   // K50 - K54
-		29, 30, 31, 32, 33        // K60 - K63
+		 6,  7,  8,  9, 10, 11,   // K10 - K15
+		12, 13, 14, 15, 16,  0,   // K20 - K24
+		17, 18, 19, 20, 21,  0,   // K30 - K34
+		22, 23, 24, 25, 26,  0,   // K40 - K44
+		36, 27, 28, 29, 30,  0,   // K50 - K54
+		31, 32, 33, 34, 35,       // K60 - K63
 	};
 	return linear_key_map[c];
 }
@@ -150,22 +150,19 @@ unsigned int keycode_to_digit_or_register(const keycode c)
 {
 	static const unsigned char map[] = {
 		// K00 - K05
-		NO_SHORT | regA_idx, NO_SHORT | regB_idx,
-		NO_SHORT | regC_idx, NO_SHORT | regD_idx,
-		NO_SHORT | NO_REG,   NO_REG,
-		// K10 - K12
-		NO_REG, NO_REG, regI_idx,
+		NO_REG, NO_REG, NO_REG, NO_REG, NO_REG, NO_REG,
+		// K10 - K15
+		NO_REG, NO_REG, NO_REG, NO_REG, NO_REG, NO_REG,
 		// K20 - K24
-		NO_SHORT | NO_REG, regJ_idx, regK_idx, regL_idx, NO_SHORT | NO_REG,
+		NO_REG, NO_REG, NO_REG, NO_REG, NO_REG,
 		// K30 - K34
 		NO_REG, 7, 8, 9, NO_REG,
 		// K40 - K44
-		NO_REG, 4, 5, 6, regT_idx,
-		// K50 - K54
-		NO_REG, 1, 2, 3, NO_REG,
-		// K60 - K63
-		NO_SHORT | NO_REG, 0, NO_SHORT | LOCAL_REG_BASE,
-		regY_idx, regZ_idx,
+		NO_REG, 4, 5, 6, NO_REG,
+		// K51 - K54
+		1, 2, 3, NO_REG,
+		// K60 - K64
+		NO_REG, 0, NO_REG, NO_REG, NO_REG,
 		// Shifts
 		NO_REG
 	};
@@ -193,7 +190,6 @@ static enum catalogues keycode_to_cat(const keycode c, enum shifts shift)
 		 *  Normal processing - Not alpha mode
 		 */
 		static const struct _map cmap[] = {
-			{ K_ARROW, { CATALOGUE_CONV,      CATALOGUE_NONE,      CATALOGUE_CONV          } },
 			{ K05,     { CATALOGUE_MODE,      CATALOGUE_MODE,      CATALOGUE_MODE          } },
 #ifdef INCLUDE_USER_CATALOGUE
 			{ K10,     { CATALOGUE_LABELS,    CATALOGUE_LABELS,    CATALOGUE_USER          } },
@@ -215,7 +211,7 @@ static enum catalogues keycode_to_cat(const keycode c, enum shifts shift)
 			{ K53,     { CATALOGUE_NORMAL,    CATALOGUE_INT,       CATALOGUE_COMPLEX       } },
 		};
 
-		if (c == K60 && shift == SHIFT_G) {
+		if (c == K60 && shift == SHIFT_H) {
 			/*
 			 *  SHOW starts register browser
 			 */
@@ -253,8 +249,6 @@ static enum catalogues keycode_to_cat(const keycode c, enum shifts shift)
 		 *  All the alpha catalogues go here
 		 */
 		static const struct _map amap[] = {
-			{ K_ARROW, { CATALOGUE_NONE, CATALOGUE_ALPHA_ARROWS,  CATALOGUE_NONE              } },
-			{ K_CMPLX, { CATALOGUE_NONE, CATALOGUE_ALPHA_LETTERS, CATALOGUE_MODE              } },
 		//	{ K10,     { CATALOGUE_NONE, CATALOGUE_NONE,          CATALOGUE_LABELS            } },
 			{ K12,     { CATALOGUE_NONE, CATALOGUE_NONE,	      CATALOGUE_ALPHA_SUBSCRIPTS  } },
 		//	{ K50,     { CATALOGUE_NONE, CATALOGUE_NONE,          CATALOGUE_STATUS            } },
@@ -307,6 +301,9 @@ static int keycode_to_alpha(const keycode c, unsigned int shift)
 		{ 'G',  0000, 0202, 0000, 'g',  0242,  },  // K10
 		{ 'H',  0000, 'X',  0000, 'h',  0265,  },  // K11
 		{ 'I',  0000, 'I',  0000, 'i',  0250,  },  // K12
+		{ 0000, 0000, 0000, 0000, 0000, 0000,  },  // K13
+		{ 0000, 0000, 0000, 0000, 0000, 0000,  },  // K14
+		{ 0000, 0000, 0000, 0000, 0000, 0000,  },  // K15
 
 		{ 0000, 0000, 'H',  0000, 0000, 0246,  },  // K20 ENTER
 		{ 'J',  '(',  ')',  0027, 'j',  ')',   },  // K21
@@ -326,7 +323,6 @@ static int keycode_to_alpha(const keycode c, unsigned int shift)
 		{ 'S',  '6',  0221, 0000, 's',  0261,  },  // K43
 		{ 'T',  0034, 'T',  0000, 't',  0262,  },  // K44
 
-		{ 0000, 0000, 0000, '?',  0000, 0000,  },  // K50
 		{ '1',  '1',  0207, 0000, '1',  0247,  },  // K51
 		{ 'U',  '2',  0000, 0000, 'u',  0000,  },  // K52
 		{ 'V',  '3',  0000, 0000, 'v',  0000,  },  // K53
@@ -341,8 +337,6 @@ static int keycode_to_alpha(const keycode c, unsigned int shift)
 	if (State2.alphashift) {
 		if (shift == SHIFT_N)
 			shift = SHIFT_LC_N;
-		else if (shift == SHIFT_G)
-			shift = SHIFT_LC_G;
 	}
 	return alphamap[keycode_to_linear(c)][shift];
 }
@@ -377,7 +371,7 @@ static void init_cat(enum catalogues cat) {
 		State2.labellist = 1;
 		State2.digval = advance_to_next_label(ProgBegin, 0, 0);
 		break;
-	
+
 	case CATALOGUE_REGISTERS:
 		// Register browser
 		State2.registerlist = 1;
@@ -490,26 +484,6 @@ static void set_smode(const enum single_disp d) {
 	State2.smode = (State2.smode == d)?SDISP_NORMAL:d;
 }
 
-static int check_f_key(int n, const int dflt) {
-	const int code = 100 + n;
-	unsigned int pc = state_pc();
-
-	if (State2.runmode) {
-		if (isXROM(pc))
-			pc = 1;
-		if (find_label_from(pc, code, FIND_OP_ENDS))
-			return RARG(RARG_XEQ, code);
-	}
-	return dflt;
-}
-
-/* Return non-zero if the current mode is integer and we accept letters
- * as digits.
- */
-static int intltr(int d) {
-	return (UState.intm && (! State2.runmode || (int) int_base() > d));
-}
-
 /*
  *  Process a key code in the unshifted mode.
  */
@@ -517,45 +491,47 @@ static int process_normal(const keycode c)
 {
 	static const unsigned short int op_map[] = {
 		// Row 1
-		OP_SPEC | OP_SIGMAPLUS, // A to D
-		OP_MON  | OP_RECIP,
-		OP_DYA  | OP_POW,
-		OP_MON  | OP_SQRT,
-		OP_SPEC | OP_E,		// ->
-		OP_SPEC | OP_F,		// CPX
+		OP_SPEC | OP_A,
+		OP_SPEC | OP_B,
+		OP_SPEC | OP_C,
+		OP_SPEC | OP_D,
+		OP_SPEC | OP_E,
+		OP_SPEC | OP_F,
 		// Row 2
-		RARG_STO,
-		RARG_RCL,
-		OP_NIL  | OP_RDOWN,
+		OP_DYA  | OP_LAND,          // AND
+		OP_DYA  | OP_LOR,           // OR
+		OP_NIL,                     // TODO: logical shift left
+		OP_NIL,                     // TODO: logical shift right
+		OP_MON | OP_PERCNT,         // %
+		RARG_RCL,                   // RCL
 		// Row 3
 		OP_SPEC | OP_ENTER,
+		OP_NIL  | OP_RDOWN,
 		RARG(RARG_SWAPX, regY_idx),
-		OP_SPEC | OP_CHS,	// CHS
-		OP_SPEC | OP_EEX,	// EEX
-		OP_SPEC | OP_CLX,	// <-
+		OP_SPEC | OP_CHS,           // CHS
+		OP_SPEC | OP_CLX,           // <-
 		// Row 4
-		RARG_XEQ,
+		STATE_BST,
 		OP_SPEC | OP_7,
 		OP_SPEC | OP_8,
 		OP_SPEC | OP_9,
 		OP_DYA  | OP_DIV,
 		// Row 5
-		STATE_BST,
+		STATE_SST,                  // SST
 		OP_SPEC | OP_4,
 		OP_SPEC | OP_5,
 		OP_SPEC | OP_6,
 		OP_DYA  | OP_MUL,
 		// Row 6
-		STATE_SST,		// SST
 		OP_SPEC | OP_1,
 		OP_SPEC | OP_2,
 		OP_SPEC | OP_3,
 		OP_DYA  | OP_SUB,
 		// Row 7
-		STATE_UNFINISHED,	// ON/C
+		STATE_UNFINISHED,           // ON/C
 		OP_SPEC | OP_0,
 		OP_SPEC | OP_DOT,
-		OP_NIL  | OP_RS,	// R/S
+		OP_NIL  | OP_RS,            // R/S
 		OP_DYA  | OP_ADD
 	};
 	int lc = keycode_to_linear(c);
@@ -563,37 +539,6 @@ static int process_normal(const keycode c)
 
 	// The switch handles all the special cases
 	switch (c) {
-	case K00:
-	case K01:
-		if (UState.intm)
-			op = OP_SPEC | (OP_A + lc);
-	case K02:
-	case K03:
-		if (intltr(lc + 10)) {
-			op = OP_SPEC | (OP_A + lc);
-			return op;
-		}
-		return check_f_key(lc, op);
-
-	case K_ARROW:
-#ifdef INT_MODE_TEMPVIEW
-		if (intltr(14))
-			return op;
-#else
-		if (UState.intm)
-			return op;
-#endif
-		process_cmdline_set_lift();
-		State2.arrow = 1;
-		set_shift(SHIFT_G);
-		break;
-
-	case K_CMPLX:
-		if (UState.intm)
-			return op;
-		State2.cmplx = 1;
-		break;
-
 	case K24:				// <-
 		if (State2.disp_temp)
 			return STATE_UNFINISHED;
@@ -601,9 +546,7 @@ static int process_normal(const keycode c)
 			return op;
 		return STATE_BACKSPACE;
 
-	case K10:				// STO
-	case K11:				// RCL
-	case K30:				// XEQ
+	case K15:				// RCL
 		init_arg((enum rarg)op);
 		break;
 
@@ -613,7 +556,7 @@ static int process_normal(const keycode c)
 	return STATE_UNFINISHED;
 }
 
-
+#if 0
 /*
  *  Process a key code after f or g shift
  */
@@ -738,6 +681,7 @@ static int process_fg_shifted(const keycode c) {
 	return check_confirm(op);
 #undef NO_INT
 }
+#endif
 
 /*
  *  Process a key code after h shift
@@ -747,50 +691,48 @@ static int process_h_shifted(const keycode c) {
 #define NO_INT   0x4000
 	static const unsigned short int op_map[] = {
 		// Row 1
-		_RARG   | RARG_STD,
-		_RARG   | RARG_FIX,
-		_RARG   | RARG_SCI,
-		_RARG   | RARG_ENG,
-		STATE_UNFINISHED,	// CONV
-		STATE_UNFINISHED,	// MODE
+                OP_NIL,
+                OP_NIL,
+                OP_NIL,
+                OP_NIL,
+                OP_NIL,
+                OP_NIL,
 		// Row 2
-		STATE_UNFINISHED,	// CAT
-		_RARG   | RARG_VIEW,
-		OP_NIL  | OP_RUP,
+		OP_MON  | OP_NOT,           // NOT
+		OP_DYA  | OP_LXOR,          // XOR
+                OP_NIL,                     // TODO
+                OP_NIL,                     // TODO
+		OP_MON | OP_PERCHG | NO_INT, // % change
+		RARG_STO,                   // STO
 		// Row 3
-		_RARG	| RARG_INTNUM,	// CONST, will be emitted in integer mode only
-		_RARG   | RARG_SWAPX,
-		OP_MON  | OP_NOT,
-		CONST(OP_PI) | NO_INT,
+		STATE_UNFINISHED,           // STATUS
+		STATE_UNFINISHED,           // MODE
+		STATE_UNFINISHED,           // P/R
+		OP_SPEC | OP_EEX,           // EEX
 		OP_NIL  | OP_rCLX,
 		// Row 4
-		_RARG   | RARG_GTO,
-		OP_DYA  | OP_LAND,
-		OP_DYA  | OP_LOR,
-		OP_DYA  | OP_LXOR,
-		OP_DYA  | OP_MOD,
+                OP_NIL,                     // TODO: INS
+		OP_MON | OP_SIN | NO_INT,   // SIN
+		OP_MON | OP_COS | NO_INT,   // COS
+		OP_MON | OP_TAN | NO_INT,   // TAN
+		STATE_UNFINISHED,           // Math
 		// Row 5
-		OP_MON  | OP_FACT,
-		STATE_UNFINISHED,	// PROB
-		STATE_UNFINISHED,	// STAT
-		STATE_UNFINISHED,	// CFIT
-		STATE_UNFINISHED,	// MATRIX
+                OP_NIL,                     // TODO: DEL
+		OP_MON | OP_LN,             // LN
+                OP_MON | OP_EXP,            // e^x
+                OP_MON | OP_SQR,            // x^2
+                OP_MON | OP_SQRT,           // sqrt
 		// Row 6
-		STATE_UNFINISHED,	// STATUS
-		STATE_UNFINISHED,	// TEST
-		STATE_UNFINISHED,	// P.FCN
-		STATE_UNFINISHED,	// X.FCN
-		OP_SPEC | OP_SIGMAMINUS | NO_INT,
+		OP_NIL | OP_RANDOM,         // RAND
+		OP_MON | OP_FACT,           // !
+		OP_DYA | OP_POW,            // y^x
+		OP_MON | OP_RECIP | NO_INT, // 1/x
 		// Row 7
-		OP_NIL | OP_OFF,
-		_RARG   | RARG_PAUSE,
-#ifdef MODIFY_K62_E3_SWITCH
-		OP_NIL  | OP_THOUS_OFF,
-#else
- 		OP_NIL  | OP_RADCOM,
-#endif
-		STATE_UNFINISHED,	// P/R
-		OP_SPEC | OP_SIGMAPLUS | NO_INT
+		OP_NIL | OP_OFF,            // OFF
+                OP_DYA | OP_PERM,           // nPr
+		OP_DYA | OP_COMB,           // nCr
+		CONST(OP_PI) | NO_INT,      // pi
+		OP_MON | OP_RND,            // RND
 	};
 
 	int lc = keycode_to_linear(c);
@@ -799,6 +741,11 @@ static int process_h_shifted(const keycode c) {
 
 	// The switch handles all the special cases
 	switch (c) {
+	case K15:				// STO
+	//case K30:				// XEQ
+		init_arg((enum rarg)op);
+		break;
+
 	case K62:
 		if (UState.intm)
 			op = UState.nointseparator ? (OP_NIL | OP_INTSEP_ON) : (OP_NIL | OP_INTSEP_OFF);
@@ -833,6 +780,7 @@ static int process_h_shifted(const keycode c) {
 #undef NO_INT
 }
 
+#if 0
 /*
  *  Process a key code after CPX
  */
@@ -909,10 +857,6 @@ static int process_cmplx(const keycode c) {
 
 	if (shift != SHIFT_N) {
 		switch (c) {
-		case K_CMPLX:
-			set_shift(shift);
-			break;
-
 		case K51:
 			if (op != STATE_UNFINISHED) {
 				process_cmdline_set_lift();
@@ -939,59 +883,9 @@ static int process_cmplx(const keycode c) {
 #undef CSWAPXZ
 #undef CNUM
 }
+#endif
 
-
-
-/*
- * Fairly simple routine for dealing with the HYP prefix.
- * This setting can only be followed by 4, 5, or 6 to specify
- * the function.  The inverse routines use the code too, the State2.dot
- * is 1 for normal and 0 for inverse hyperbolic.  We also have to
- * deal with the complex versions and the handling of that key and
- * the ON key are dealt with by our caller.
- */
-static int process_hyp(const keycode c) {
-	static const unsigned char op_map[][2] = {
-		{ OP_ASINH, OP_SINH },
-		{ OP_ACOSH, OP_COSH },
-		{ OP_ATANH, OP_TANH }
-	};
-	int cmplx = State2.cmplx;
-	int f = State2.dot;
-
-	State2.hyp = 0;
-	State2.cmplx = 0;
-	State2.dot = 0;
-
-	switch ((int)c) {
-
-	case K01:
-	case K02:
-	case K03:
-		return (cmplx ? OP_CMON : OP_MON) | op_map[c - K01][f];
-
-	case K_CMPLX:
-		cmplx = ! cmplx;
-		goto stay;
-
-	case K_F:
-	case K_G:
-		f = (c == K_F);
-		// fall trough
-	stay:
-		// process_cmdline_set_lift();
-		State2.hyp = 1;
-		State2.cmplx = cmplx;
-		State2.dot = f;
-		break;
-
-	default:
-		break;
-	}
-	return STATE_UNFINISHED;
-}
-
-
+#if 0
 /*
  *  Process a key code after ->
  */
@@ -1008,7 +902,7 @@ static int process_arrow(const keycode c) {
 	const int f = (reset_shift() == SHIFT_F);
 
 	State2.arrow = 0;
-	
+
 	if (c >= K10 && c <= K12)
 		return op_map[c - K10][f];
 
@@ -1017,6 +911,7 @@ static int process_arrow(const keycode c) {
 
 	return STATE_UNFINISHED;
 }
+#endif
 
 
 /* Process a GTO . sequence
@@ -1105,101 +1000,6 @@ fin2:		State2.gtodot = 0;
 }
 
 
-/* Process a keystroke in alpha mode
- */
-static int process_alpha(const keycode c) {
-	const enum shifts shift = reset_shift();
-	int ch = keycode_to_alpha(c, shift);
-	unsigned int alpha_pos = State2.alpha_pos, n;
-        int op = STATE_UNFINISHED;
-	State2.alpha_pos = 0;
-
-	switch (c) {
-	case K10:	// STO
-		if (shift == SHIFT_F) {
-			init_arg(RARG_ASTO);
-			return STATE_UNFINISHED;
-		}
-		break;
-
-	case K11:	// RCL - maybe view
-		if (shift == SHIFT_F) {
-			init_arg(RARG_ARCL);
-			return STATE_UNFINISHED;
-		} else if (shift == SHIFT_H) {
-			init_arg(RARG_VIEW_REG);
-			return STATE_UNFINISHED;
-		}
-		break;
-
-	case K20:	// Enter - maybe exit alpha mode
-		if (shift == SHIFT_G || shift == SHIFT_H)
-			break;
-		if (shift == SHIFT_F && ! State2.runmode) {
-			State2.multi = 1;
-			State2.numdigit = 0;
-			CmdBase = DBL_ALPHA;
-			return STATE_UNFINISHED;
-		}
-		State2.alphas = 0;
-		State2.alphashift = 0;
-		return op;
-
-	case K24:	// Clx - backspace, clear Alpha
-		if (shift == SHIFT_N)
-			return STATE_BACKSPACE;
-		if (shift == SHIFT_H)
-			return OP_NIL | OP_CLRALPHA;
-		break;
-
-	case K40:
-		if (shift == SHIFT_N) {
-			if ( State2.runmode ) {
-				// Alpha scroll left
-				n = alpha_pos + 1;
-				State2.alpha_pos = ( n < ( alen() + 5 ) / 6 ) ? n : alpha_pos;
-				return STATE_UNFINISHED;
-			}
-			return STATE_BST;
-		}
-		break;
-
-	case K50:
-		if (shift == SHIFT_N) {
-			if ( State2.runmode ) {
-				// Alpha scroll right
-				if (alpha_pos > 0)
-					State2.alpha_pos = alpha_pos-1;
-				return STATE_UNFINISHED;
-			}
-			return STATE_SST;
-		}
-		break;
-
-	case K60:	// EXIT/ON maybe case switch, otherwise exit alpha
-		if (shift == SHIFT_F)
-			State2.alphashift = 1 - State2.alphashift;
-		else if (shift == SHIFT_H)
-			return OP_NIL | OP_OFF;
-		else if (shift == SHIFT_N)
-			init_state();
-		return STATE_UNFINISHED;
-
-	case K63:
-		if (shift == SHIFT_F)
-			return OP_NIL | OP_RS;		// R/S
-		break;
-
-	default:
-		break;
-	}
-
-	/* Look up the character and return an alpha code if okay */
-	if (ch == 0)
-		return STATE_UNFINISHED;
-	return RARG(RARG_ALPHA, ch);
-}
-
 /*
  *  Code to handle all commands with arguments
  */
@@ -1210,8 +1010,8 @@ static void reset_arg(void) {
 
 static int arg_eval(unsigned int val) {
 	const unsigned int base = CmdBase;
-	const int r = RARG(base, val 
-				 + (State2.ind ? RARG_IND : 0) 
+	const int r = RARG(base, val
+				 + (State2.ind ? RARG_IND : 0)
 		                 + (State2.local ? LOCAL_REG_BASE : 0));
 	const unsigned int ssize = (! UState.stack_depth || ! State2.runmode ) ? 4 : 8;
 
@@ -1236,7 +1036,7 @@ static int arg_digit(int n) {
 	const unsigned int val = State2.digval * 10 + n;
 	const int is_reg = argcmds[base].reg || State2.ind;
 	int lim;
-	
+
 	if (State2.local) {
 		// Handle local registers and flags
 		lim = MAX_LOCAL_DIRECT - 1;				// default
@@ -1350,11 +1150,8 @@ static int process_arg(const keycode c) {
 	unsigned int base = CmdBase;
 	unsigned int n = keycode_to_digit_or_register(c);
 	int stack_reg = argcmds[base].stckreg || State2.ind;
-	const enum shifts previous_shift = (enum shifts) State2.shifts;
-	const enum shifts shift = reset_shift();
 	int label_addressing = argcmds[base].label && ! State2.ind && ! State2.dot;
-	int shorthand = label_addressing && c != K_F 
-		        && (shift == SHIFT_F || (n > 9 && !(n & NO_SHORT)));
+	int shorthand = label_addressing && (n > 9 && !(n & NO_SHORT));
 
 	n &= ~NO_SHORT;
 	if (base >= NUM_RARG) {
@@ -1373,28 +1170,6 @@ static int process_arg(const keycode c) {
 	 *  Handle the rest here.
 	 */
 	switch ((int)c) {
-	case K_F:
-		if (label_addressing)
-			set_shift(previous_shift == SHIFT_F ? SHIFT_N : SHIFT_F);
-		break;
-
-	case K_ARROW:		// arrow
-		if (!State2.dot && argcmds[base].indirectokay) {
-			State2.ind = ! State2.ind;
-			if (! stack_reg)
-				State2.dot = 0;
-		}
-		break;
-
-	case K_CMPLX:
-		if (State2.ind || State2.dot)
-			break;
-		if (base == RARG_STO)
-			CmdBase = RARG_STOM;
-		else if (base == RARG_RCL)
-			CmdBase = RARG_RCLM;
-		break;
-
 	case K63:	// Y
 		if (State2.shuffle)
 			return process_arg_shuffle(1);
@@ -1533,7 +1308,7 @@ static int process_test(const keycode c) {
 		// Special 1
 		return OP_SPEC + (cmpx ? OP_Zeq1 : OP_Xeq1) + r;
 	}
-	else if ( n <= 9 || c == K_ARROW || c == K62 ) {
+	else if ( n <= 9 || c == K62 ) {
 		// digit 2..9, -> or .
 		init_arg((enum rarg)base);
 		return process_arg(c);
@@ -1637,8 +1412,8 @@ static int build_user_cat(void)
  */
 int current_catalogue_max(void) {
 	// A quick table of catalogue sizes
-	// NB: the order here MUST match that in `enum catalogues' 
-	static const unsigned char catalogue_sizes[] = 
+	// NB: the order here MUST match that in `enum catalogues'
+	static const unsigned char catalogue_sizes[] =
 	{
 		0, // NONE
 		SIZE_catalogue,
@@ -1843,51 +1618,12 @@ static int process_catalogue(const keycode c, const enum shifts shift, const int
 		default:
 			break;
 		}
-	} else if (shift == SHIFT_F) {
-		if (cat == CATALOGUE_CONV && c == K01) {
-			/*
-			 * f 1/x in conversion catalogue
-			 */
-			/* A small table of commands in pairs containing inverse commands.
-			 * This table could be unsigned characters only storing the monadic kind.
-			 * this saves twelve bytes in the table at a cost of some bytes in the code below.
-			 * Not worth it since the maximum saving will be less than twelve bytes.
-			 */
-			static const unsigned short int conv_mapping[] = {
-				OP_MON | OP_AR_DB,	OP_MON | OP_DB_AR,
-				OP_MON | OP_DB_PR,	OP_MON | OP_PR_DB,
-				OP_MON | OP_DEGC_F,	OP_MON | OP_DEGF_C,
-				OP_MON | OP_DEG2RAD,	OP_MON | OP_RAD2DEG,
-				OP_MON | OP_DEG2GRD,	OP_MON | OP_GRD2DEG,
-				OP_MON | OP_RAD2GRD,	OP_MON | OP_GRD2RAD,
-			};
-			const opcode op = current_catalogue(pos);
-			int i;
-
-			init_cat(CATALOGUE_NONE);
-			if (isRARG(op))
-				return op ^ 1;
-			for (i = 0; i < sizeof(conv_mapping) / sizeof(conv_mapping[0]); ++i)
-				if (op == conv_mapping[i])
-					return conv_mapping[i^1];
-			return STATE_UNFINISHED;		// Unreached
-		}
-		else if (c == K60 && (State2.alphas || State2.multi)) {
-			// Handle alpha shift in alpha character catalogues
-			State2.alphashift = 1 - State2.alphashift;
-			return STATE_UNFINISHED;
-		}
-	} else if (shift == SHIFT_G) {
-		if (c == K24 && cat == CATALOGUE_SUMS) {
-			init_cat(CATALOGUE_NONE);
-			return OP_NIL | OP_SIGMACLEAR;
-		}
 	}
 
 	/* We've got a key press, map it to a character and try to
 	 * jump to the appropriate catalogue entry.
 	 */
-	ch = remap_chars(keycode_to_alpha(c, shift == SHIFT_G ? SHIFT_LC_G : shift));
+	ch = remap_chars(keycode_to_alpha(c, shift));
 	reset_shift();
 	if (ch == '\0')
 		return STATE_UNFINISHED;
@@ -2000,7 +1736,7 @@ static int process_multi(const keycode c) {
 		break;
 
 	case K60:	// EXIT/ON maybe case switch, otherwise exit alpha
-		if (shift == SHIFT_F)
+		if (shift == SHIFT_H)
 			State2.alphashift = 1 - State2.alphashift;
 		else
 			reset_multi();
@@ -2027,7 +1763,7 @@ add_char:
 	reset_multi();
 
 fin:
-	opcode = OP_DBL + (CmdBase << DBL_SHIFT) 
+	opcode = OP_DBL + (CmdBase << DBL_SHIFT)
 	       + State2.digval + (State2.digval2 << 16) + (ch << 24);
 	return opcode;
 }
@@ -2075,7 +1811,7 @@ static int process_status(const keycode c) {
 	else if (c == K24 /* || c == K60 */) {
 		State2.status = 0;
 		return STATE_UNFINISHED;
-	} 
+	}
 	else {
 		int nn = keycode_to_digit_or_register(c) & 0x7f;
 		if (nn <= 9)
@@ -2083,7 +1819,7 @@ static int process_status(const keycode c) {
 		else if (nn == LOCAL_REG_BASE)
 			n = n == max ? 10 : max;
 		else if (nn != NO_REG)
-			n = 10; 
+			n = 10;
 	}
 	State2.status = n + 3;
 
@@ -2141,7 +1877,7 @@ static unsigned int advance_to_previous_label(unsigned int pc, int search_end) {
  */
 static int process_labellist(const keycode c) {
 	unsigned int pc = State2.digval;
-	const unsigned int n = c == K62 ? REGION_XROM 
+	const unsigned int n = c == K62 ? REGION_XROM
 		                        : keycode_to_digit_or_register(c) & ~NO_SHORT;
 	const int opcode = getprog(pc);
 	const int label = isDBL(opcode) ? (getprog(pc) & 0xfffff0ff) : 0;
@@ -2160,11 +1896,11 @@ static int process_labellist(const keycode c) {
 
 	switch (c | (shift << 8)) {
 
-	case K40 | (SHIFT_F << 8):		// Find first label of previous program
+	case K40 | (SHIFT_H << 8):		// Find first label of previous program
 		pc = advance_to_previous_label(advance_to_previous_label(pc, 1), 1);
 		goto next;
 
-	case K50 | (SHIFT_F << 8):		// Find next program
+	case K50 | (SHIFT_H << 8):		// Find next program
 		pc = advance_to_next_label(pc, 0, 1);
 	case K50:				// Find next label
 	next:
@@ -2183,7 +1919,7 @@ static int process_labellist(const keycode c) {
 		set_pc(pc);			// forced branch
 		break;
 
-	case K24 | (SHIFT_F << 8):		// CLP
+	case K24 | (SHIFT_H << 8):		// CLP
 		op = (OP_NIL | OP_CLPROG);
 		goto set_pc_and_exit;
 
@@ -2230,14 +1966,14 @@ static void set_window(int c) {
 		process_cmdline_set_lift();
 		// Make sure IntMaxWindow is recalculated
 		State2.disp_freeze = 0;
-		display();	
+		display();
 		if (c == STATE_WINDOWRIGHT) {
 			if (UState.intm) {
 				if (IntMaxWindow > 0 && State2.window > 0)
 					State2.window--;
 				return;
 			}
-			else 
+			else
 				State2.window = is_dblmode();
 		}
 		else {
@@ -2273,8 +2009,8 @@ static int process_registerlist(const keycode c) {
 		State2.digval = dv;
 		goto reset_window;
 	}
-	else if ((shift == SHIFT_F || shift == SHIFT_G) && c == K21) {  // <( )>
-		set_window(shift == SHIFT_F ? STATE_WINDOWLEFT : STATE_WINDOWRIGHT);
+	else if ((shift == SHIFT_H) && c == K21) {  // <( )>
+		set_window(shift == SHIFT_H ? STATE_WINDOWLEFT : STATE_WINDOWRIGHT);
 		set_smode(SDISP_SHOW);
 	}
 	else if (n != NO_REG) {
@@ -2299,7 +2035,7 @@ static int process_registerlist(const keycode c) {
 			if (! State2.local && State2.digval == global_regs())
 				State2.digval = regX_idx;
 		}
-		else	
+		else
 			State2.digval = 0;
 		goto reset_window;
 
@@ -2309,14 +2045,13 @@ static int process_registerlist(const keycode c) {
 		goto reset_window;
 #endif
 
-	case K24:			
-	//case K60:
+	case K24:
 		if (State2.disp_temp)
 			return STATE_UNFINISHED;
 		break;		// Exit doing nothing
 
 	case K20:		// ENTER
-		if (shift == SHIFT_F) {
+		if (shift == SHIFT_H) {
 			State2.disp_as_alpha = 1;
 			goto reset_window;
 		}
@@ -2406,9 +2141,6 @@ static int process(const int c) {
 	if (State2.gtodot)
 		return process_gtodot((const keycode)c);
 
-	if (State2.hyp)
-		return process_hyp((const keycode)c);
-
 	if (State2.test != TST_NONE)
 		return process_test((const keycode)c);
 
@@ -2416,17 +2148,9 @@ static int process(const int c) {
 		return process_status((const keycode)c);
 
 	/*
-	 *  Process shift keys directly
+	 *  Process shift key directly
 	 */
-	if (c == K_F) {
-		toggle_shift(SHIFT_F);
-		return STATE_UNFINISHED;
-	}
-	if (c == K_G) {
-		toggle_shift(SHIFT_G);
-		return STATE_UNFINISHED;
-	}
-	if (c == K_H) {
+	if (c == K_SHIFT) {
 		toggle_shift(SHIFT_H);
 		return STATE_UNFINISHED;
 	}
@@ -2454,9 +2178,6 @@ static int process(const int c) {
 	if (State2.multi)
 		return process_multi((const keycode)c);
 
-	if (State2.arrow)
-		return process_arrow((const keycode)c);
-
 	if (State2.labellist)
 		return process_labellist((const keycode)c);
 
@@ -2466,28 +2187,9 @@ static int process(const int c) {
 	if (State2.catalogue)
 		return process_catalogue((const keycode)c, reset_shift(), 0);
 
-	if (State2.alphas) {
-#ifndef INFRARED
-		return process_alpha((const keycode)c);
-#else
-		int i = process_alpha((const keycode)c);
-		if (! State2.alphas && get_user_flag(T_FLAG)) {
-			print_tab(0);
-			print_alpha(OP_PRINT_ALPHA);
-		}
-		return i;
-#endif
-	}
-
-	if (State2.cmplx) {
-		return process_cmplx((const keycode)c);
-	} else {
-		if (shift == SHIFT_F || shift == SHIFT_G)
-			return process_fg_shifted((const keycode)c);
-		if (shift == SHIFT_H)
-			return process_h_shifted((const keycode)c);
-		return process_normal((const keycode)c);
-	}
+        if (shift == SHIFT_H)
+                return process_h_shifted((const keycode)c);
+        return process_normal((const keycode)c);
 }
 
 
@@ -2639,7 +2341,7 @@ void process_keycode(int c)
 	}
 	else {
 		/*
-		 *  Decode the key 
+		 *  Decode the key
 		 */
 		ShowRPN = ! Running;	// Default behaviour, may be turned off later
 

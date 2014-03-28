@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,7 +22,7 @@
 #include <ctype.h>
 #include <string.h>
 
-#include "xeq.h" 
+#include "xeq.h"
 #include "keys.h"
 #include "display.h"
 #include "lcd.h"
@@ -47,8 +47,8 @@ int view_instruction_counter = 0;
  */
 static int remap(const int c) {
 	switch (c) {
-	case 'F':	return K_F;
-	case 'G':	return K_G;
+	//case 'F':	return K_F;
+	//case 'G':	return K_G;
 	case 'H':	return K_H;
 
 	case 'q':	return K00;
@@ -64,8 +64,8 @@ static int remap(const int c) {
 	case 'a':	return K10;
 	case 's':	return K11;
 	case 'd':	return K12;
-	case 'f':	return K_F;
-	case 'g':	return K_G;
+	//case 'f':	return K_F;
+	//case 'g':	return K_G;
 	case 'h':	return K_H;
 
 	case 'z':	return K20;
@@ -127,7 +127,7 @@ static void rarg_values(const opcode c, int l) {
 		}
 	}
 }
-	
+
 static int dumpop(const opcode c, int pt) {
 	char tracebuf[25];
 	const char *s, *m;
@@ -274,7 +274,7 @@ static const struct {
 #undef XE
 };
 #define num_xrom_entry_points	(sizeof(xrom_entry_points) / sizeof(*xrom_entry_points))
-	
+
 static const struct {
 	opcode op;
 	const char *const name;
@@ -488,7 +488,7 @@ void shutdown( void )
 /*
  *  Dummies
  */
-int is_key_pressed(void) 
+int is_key_pressed(void)
 {
 	return 0;
 }
@@ -689,4 +689,3 @@ skipargs:
 	shutdown();
 	return 0;
 }
-
