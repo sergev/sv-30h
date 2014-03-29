@@ -1,2 +1,2 @@
 #!/bin/sh
-./Linux/WP-34s -dev
+./Linux/WP-34s -dev &

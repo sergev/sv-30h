@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -41,7 +41,8 @@
  *  Usage: XPTR(WHO) instead of a function pointer
  */
 #define XLBL(name) XROM_ ## name
-#define XPTR(name) (xrom+XLBL(name)-XROM_START)
+//#define XPTR(name) (xrom+XLBL(name)-XROM_START)
+#define XPTR(name) NOFN
 
 /* Utility macros to reduce the horizontal space of using XPTR directly
  * Usage is the same.
@@ -108,7 +109,7 @@ const struct _command_info command_info = {
 
 // Dummy definition for catalogue generation
 #ifdef COMPILE_CATALOGUES
-#undef NOFN 
+#undef NOFN
 #else
 #define NOFN NULL
 #endif
@@ -119,15 +120,15 @@ const struct _command_info command_info = {
  */
 #ifdef COMPILE_CATALOGUES
 #undef NOFN
-#define FUNC(name, d, c, i, fn, alias) { #d, #c, #i, fn, alias },
+#define FUNC(name, d, i, fn, alias) { #d, #i, fn, alias },
 #elif DEBUG
-#define FUNC(name, d, c, i, fn, alias) { name, d, c, i, fn, alias },
+#define FUNC(name, d, i, fn, alias) { name, d, i, fn, alias },
 #elif COMMANDS_PASS == 1
-#define FUNC(name, d, c, i, fn, alias) { 0xaa55, 0x55aa, 0xa55a, fn },
+#define FUNC(name, d, i, fn, alias) { 0xaa55, 0xa55a, fn },
 #elif defined(REALBUILD)
-#define FUNC(name, d, c, i, fn, alias) { d, c, i, fn },
+#define FUNC(name, d, i, fn, alias) { d, i, fn },
 #else
-#define FUNC(name, d, c, i, fn, alias) { d, c, i, fn, alias },
+#define FUNC(name, d, i, fn, alias) { d, i, fn, alias },
 #endif
 
 #if COMMANDS_PASS == 2
@@ -135,180 +136,180 @@ CMDTAB const struct monfunc_cmdtab monfuncs_ct[ NUM_MONADIC ] = {
 #else
 const struct monfunc monfuncs[ NUM_MONADIC ] = {
 #endif
-	FUNC(OP_FRAC,	&decNumberFrac,		XMC(cpx_FRAC),	&intFP,		"FP",		CNULL)
-	FUNC(OP_FLOOR,	&decNumberFloor,	NOFN,		&intIP,		"FLOOR",	CNULL)
-	FUNC(OP_CEIL,	&decNumberCeil,		NOFN,		&intIP,		"CEIL",		CNULL)
-	FUNC(OP_ROUND,	&decNumberRound,	NOFN,		&intIP,		"ROUNDI",	CNULL)
-	FUNC(OP_TRUNC,	&decNumberTrunc,	XMC(cpx_TRUNC),	&intIP,		"IP",		CNULL)
-	FUNC(OP_ABS,	&dn_abs,		&cmplxAbs,	&intAbs,	"ABS",		CNULL)
-	FUNC(OP_RND,	&decNumberRnd,		XMC(cpx_ROUND),	&intIP,		"ROUND",	CNULL)
-	FUNC(OP_SIGN,	XMR(SIGN),		XMC(cpx_SIGN),	&intSign,	"SIGN",		CNULL)
-	FUNC(OP_LN,	&dn_ln,			&cmplxLn,	&intMonadic,	"LN",		CNULL)
-	FUNC(OP_EXP,	&dn_exp,		&cmplxExp,	&intMonadic,	"e\234",	"EXP")
-	FUNC(OP_SQRT,	&dn_sqrt,		&cmplxSqrt,	&intSqrt,	"\003",		"SQRT")
-	FUNC(OP_RECIP,	&decNumberRecip,	&cmplxRecip,	NOFN,		"1/x",		"INV")
-	FUNC(OP__1POW,	&decNumberPow_1,	&cmplx_1x,	&int_1pow,	"(-1)\234",	"(-1)^x")
-	FUNC(OP_LOG,	&dn_log10,		XMC(cpx_LOG10),	&intLog10,	"LOG\271\270",	"LG")
-	FUNC(OP_LG2,	&dn_log2,		XMC(cpx_LOG2),	&intLog2,	"LOG\272",	"LB")
-	FUNC(OP_2POWX,	&decNumberPow2,		XMC(cpx_POW2),	&int2pow,	"2\234",	"2^x")
-	FUNC(OP_10POWX,	&decNumberPow10,	XMC(cpx_POW10),	&int10pow,	"10\234",	"10^x")
-	FUNC(OP_LN1P,	&decNumberLn1p,		XMC(cpx_LN1P),	NOFN,		"LN1+x",	CNULL)
-	FUNC(OP_EXPM1,	&decNumberExpm1,	XMC(cpx_EXPM1),	NOFN,		"e\234-1",	"EXP-1")
-	FUNC(OP_LAMW,	XMR(W0),		XMC(CPX_W0),	NOFN,		"W\276",	"W0")
-	FUNC(OP_LAMW1,	XMR(W1),		NOFN,		NOFN,		"W\033",	"W1")
-	FUNC(OP_INVW,	XMR(W_INVERSE),		XMC(CPX_W_INVERSE),NOFN,	"W\235",	"INV-W")
-	FUNC(OP_SQR,	&decNumberSquare,	XMC(cpx_x2),	&intSqr,	"x\232",	"x^2")
-	FUNC(OP_CUBE,	&decNumberCube,		XMC(cpx_x3),	&intCube,	"x\200",	"x^3")
-	FUNC(OP_CUBERT,	&decNumberCubeRoot,	&cmplxCubeRoot,	&intMonadic,	"\200\003",	"CROOT")
-	FUNC(OP_FIB,	XMR(FIB),		XMC(CPX_FIB),	&intFib,	"FIB",		CNULL)
-	FUNC(OP_2DEG,	&decNumberDRG,		NOFN,		NOFN,		"\015DEG",	">DEG")
-	FUNC(OP_2RAD,	&decNumberDRG,		NOFN,		NOFN,		"\015RAD",	">RAD")
-	FUNC(OP_2GRAD,	&decNumberDRG,		NOFN,		NOFN,		"\015GRAD",	">GRAD")
-	FUNC(OP_DEG2,	&decNumberDRG,		NOFN,		NOFN,		"DEG\015",	"DEG>")
-	FUNC(OP_RAD2,	&decNumberDRG,		NOFN,		NOFN,		"RAD\015",	"RAD>")
-	FUNC(OP_GRAD2,	&decNumberDRG,		NOFN,		NOFN,		"GRAD\015",	"GRAD>")
-	FUNC(OP_SIN,	&decNumberSin,		&cmplxSin,	NOFN,		"SIN",		CNULL)
-	FUNC(OP_COS,	&decNumberCos,		&cmplxCos,	NOFN,		"COS",		CNULL)
-	FUNC(OP_TAN,	&decNumberTan,		&cmplxTan,	NOFN,		"TAN",		CNULL)
-	FUNC(OP_ASIN,	&decNumberArcSin,	XMC(cpx_ASIN),	NOFN,		"ASIN",		CNULL)
-	FUNC(OP_ACOS,	&decNumberArcCos,	XMC(cpx_ACOS),	NOFN,		"ACOS",		CNULL)
-	FUNC(OP_ATAN,	&decNumberArcTan,	XMC(cpx_ATAN),	NOFN,		"ATAN",		CNULL)
-	FUNC(OP_SINC,	&decNumberSinc,		&cmplxSinc,	NOFN,		"SINC",		CNULL)
-	FUNC(OP_SINH,	&decNumberSinh,		&cmplxSinh,	NOFN,		"SINH",		CNULL)
-	FUNC(OP_COSH,	&decNumberCosh,		&cmplxCosh,	NOFN,		"COSH",		CNULL)
-	FUNC(OP_TANH,	&decNumberTanh,		&cmplxTanh,	NOFN,		"TANH",		CNULL)
-	FUNC(OP_ASINH,	&decNumberArcSinh,	XMC(cpx_ASINH),	NOFN,		"ASINH",	CNULL)
-	FUNC(OP_ACOSH,	&decNumberArcCosh,	XMC(cpx_ACOSH),	NOFN,		"ACOSH",	CNULL)
-	FUNC(OP_ATANH,	&decNumberArcTanh,	XMC(cpx_ATANH),	NOFN,		"ATANH",	CNULL)
+	FUNC(OP_FRAC,	&decNumberFrac,		&intFP,		"FP",		CNULL)
+	FUNC(OP_FLOOR,	&decNumberFloor,	&intIP,		"FLOOR",	CNULL)
+	FUNC(OP_CEIL,	&decNumberCeil,		&intIP,		"CEIL",		CNULL)
+	FUNC(OP_ROUND,	&decNumberRound,	&intIP,		"ROUNDI",	CNULL)
+	FUNC(OP_TRUNC,	&decNumberTrunc,	&intIP,		"IP",		CNULL)
+	FUNC(OP_ABS,	&dn_abs,		&intAbs,	"ABS",		CNULL)
+	FUNC(OP_RND,	&decNumberRnd,		&intIP,		"ROUND",	CNULL)
+	FUNC(OP_SIGN,	XMR(SIGN),		&intSign,	"SIGN",		CNULL)
+	FUNC(OP_LN,	&dn_ln,			&intMonadic,	"LN",		CNULL)
+	FUNC(OP_EXP,	&dn_exp,		&intMonadic,	"e\234",	"EXP")
+	FUNC(OP_SQRT,	&dn_sqrt,		&intSqrt,	"\003",		"SQRT")
+	FUNC(OP_RECIP,	&decNumberRecip,	NOFN,		"1/x",		"INV")
+	FUNC(OP__1POW,	&decNumberPow_1,	&int_1pow,	"(-1)\234",	"(-1)^x")
+	FUNC(OP_LOG,	&dn_log10,		&intLog10,	"LOG\271\270",	"LG")
+	FUNC(OP_LG2,	&dn_log2,		&intLog2,	"LOG\272",	"LB")
+	FUNC(OP_2POWX,	&decNumberPow2,		&int2pow,	"2\234",	"2^x")
+	FUNC(OP_10POWX,	&decNumberPow10,	&int10pow,	"10\234",	"10^x")
+	FUNC(OP_LN1P,	&decNumberLn1p,		NOFN,		"LN1+x",	CNULL)
+	FUNC(OP_EXPM1,	&decNumberExpm1,	NOFN,		"e\234-1",	"EXP-1")
+	FUNC(OP_LAMW,	XMR(W0),		NOFN,		"W\276",	"W0")
+	FUNC(OP_LAMW1,	XMR(W1),		NOFN,		"W\033",	"W1")
+	FUNC(OP_INVW,	XMR(W_INVERSE),		NOFN,		"W\235",	"INV-W")
+	FUNC(OP_SQR,	&decNumberSquare,	&intSqr,	"x\232",	"x^2")
+	FUNC(OP_CUBE,	&decNumberCube,		&intCube,	"x\200",	"x^3")
+	FUNC(OP_CUBERT,	&decNumberCubeRoot,	&intMonadic,	"\200\003",	"CROOT")
+	FUNC(OP_FIB,	XMR(FIB),		&intFib,	"FIB",		CNULL)
+	FUNC(OP_2DEG,	&decNumberDRG,		NOFN,		"\015DEG",	">DEG")
+	FUNC(OP_2RAD,	&decNumberDRG,		NOFN,		"\015RAD",	">RAD")
+	FUNC(OP_2GRAD,	&decNumberDRG,		NOFN,		"\015GRAD",	">GRAD")
+	FUNC(OP_DEG2,	&decNumberDRG,		NOFN,		"DEG\015",	"DEG>")
+	FUNC(OP_RAD2,	&decNumberDRG,		NOFN,		"RAD\015",	"RAD>")
+	FUNC(OP_GRAD2,	&decNumberDRG,		NOFN,		"GRAD\015",	"GRAD>")
+	FUNC(OP_SIN,	&decNumberSin,		NOFN,		"SIN",		CNULL)
+	FUNC(OP_COS,	&decNumberCos,		NOFN,		"COS",		CNULL)
+	FUNC(OP_TAN,	&decNumberTan,		NOFN,		"TAN",		CNULL)
+	FUNC(OP_ASIN,	&decNumberArcSin,	NOFN,		"ASIN",		CNULL)
+	FUNC(OP_ACOS,	&decNumberArcCos,	NOFN,		"ACOS",		CNULL)
+	FUNC(OP_ATAN,	&decNumberArcTan,	NOFN,		"ATAN",		CNULL)
+	FUNC(OP_SINC,	&decNumberSinc,		NOFN,		"SINC",		CNULL)
+	FUNC(OP_SINH,	&decNumberSinh,		NOFN,		"SINH",		CNULL)
+	FUNC(OP_COSH,	&decNumberCosh,		NOFN,		"COSH",		CNULL)
+	FUNC(OP_TANH,	&decNumberTanh,		NOFN,		"TANH",		CNULL)
+	FUNC(OP_ASINH,	&decNumberArcSinh,	NOFN,		"ASINH",	CNULL)
+	FUNC(OP_ACOSH,	&decNumberArcCosh,	NOFN,		"ACOSH",	CNULL)
+	FUNC(OP_ATANH,	&decNumberArcTanh,	NOFN,		"ATANH",	CNULL)
 #ifdef INCLUDE_GUDERMANNIAN
-	FUNC(OP_GUDER,	XMR(gd),		XMC(cpx_gd),	NOFN,		"g\206",	"GUD")
-	FUNC(OP_INVGUD,	XMR(inv_gd),		XMC(cpx_inv_gd),NOFN,		"g\206\235",	"INV-GUD")
+	FUNC(OP_GUDER,	XMR(gd),		NOFN,		"g\206",	"GUD")
+	FUNC(OP_INVGUD,	XMR(inv_gd),		NOFN,		"g\206\235",	"INV-GUD")
 #endif
 
-	FUNC(OP_FACT,	&decNumberFactorial,	XMC(cpx_FACT),	&intMonadic,	"x!",		CNULL)
-	FUNC(OP_GAMMA,	&decNumberGamma,	&cmplxGamma,	&intMonadic,	"\202",		"GAMMA")
-	FUNC(OP_LNGAMMA,&decNumberLnGamma,	&cmplxLnGamma,	NOFN,		"LN\202",	"LNGAMMA")
-	FUNC(OP_DEG2RAD,&decNumberD2R,		NOFN,		NOFN,		"\005\015rad",	"DEG>RAD")
-	FUNC(OP_RAD2DEG,&decNumberR2D,		NOFN,		NOFN,		"rad\015\005",	"RAD>DEG")
-	FUNC(OP_DEG2GRD,&decNumberD2G,		NOFN,		NOFN,		"\005\015G",	"DEG>GRAD")
-	FUNC(OP_GRD2DEG,&decNumberG2D,		NOFN,		NOFN,		"G\015\005",	"GRAD>DEG")
-	FUNC(OP_RAD2GRD,&decNumberR2G,		NOFN,		NOFN,		"rad\015G",	"RAD>GRAD")
-	FUNC(OP_GRD2RAD,&decNumberG2R,		NOFN,		NOFN,		"G\015rad",	"GRAD>RAD")
-	FUNC(OP_CCHS,	NOFN,			&cmplxMinus,	NOFN,		"\024+/-",	"c+/-")
-	FUNC(OP_CCONJ,	NOFN,			XMC(cpx_CONJ),	NOFN,		"CONJ",		CNULL)
-	FUNC(OP_ERF,	XMR(ERF),		NOFN,		NOFN,		"erf",		CNULL)
-	FUNC(OP_ERFC,	XMR(ERFC),		NOFN,		NOFN,		"erfc",		CNULL)
-	FUNC(OP_pdf_Q,	XMR(PDF_Q), 		NOFN,		NOFN,		"\264(x)",	"phi(x)")
-	FUNC(OP_cdf_Q,	XMR(CDF_Q), 		NOFN,		NOFN,		"\224(x)",	"PHI(x)")
-	FUNC(OP_qf_Q,	XMR(QF_Q),  		NOFN,		NOFN,		"\224\235(p)",	"INV-PHI")
-	FUNC(OP_pdf_chi2, XMR(PDF_CHI2),	NOFN,		NOFN,		"\265\232\276",	"chi2-p")
-	FUNC(OP_cdf_chi2, XMR(CDF_CHI2),	NOFN,		NOFN,		"\265\232",	"CHI2")
-	FUNC(OP_qf_chi2,  XMR(QF_CHI2),		NOFN,		NOFN,		"\265\232INV",	"INV-CHI2")
-	FUNC(OP_pdf_T,	XMR(PDF_T),		NOFN,		NOFN,		"t\276(x)",	"t-p(x)")
-	FUNC(OP_cdf_T,	XMR(CDF_T),		NOFN,		NOFN,		"t(x)",		CNULL)
-	FUNC(OP_qf_T,	XMR(QF_T),		NOFN,		NOFN,		"t\235(p)",	"INV-t")
-	FUNC(OP_pdf_F,	XMR(PDF_F),		NOFN,		NOFN,		"F\276(x)",	"F-p(x)")
-	FUNC(OP_cdf_F,	XMR(CDF_F),		NOFN,		NOFN,		"F(x)",		CNULL)
-	FUNC(OP_qf_F,	XMR(QF_F),		NOFN,		NOFN,		"F\235(p)",	"INV-F")
-	FUNC(OP_pdf_WB,	XMR(PDF_WEIB),		NOFN,		NOFN,		"Weibl\276",	"Weibl-p")
-	FUNC(OP_cdf_WB,	XMR(CDF_WEIB),		NOFN,		NOFN,		"Weibl",	CNULL)
-	FUNC(OP_qf_WB,	XMR(QF_WEIB),		NOFN,		NOFN,		"Weibl\235",	"INV-Weibl")
-	FUNC(OP_pdf_EXP,XMR(PDF_EXPON),		NOFN,		NOFN,		"Expon\276",	"Expon-p")
-	FUNC(OP_cdf_EXP,XMR(CDF_EXPON),		NOFN,		NOFN,		"Expon",	CNULL)
-	FUNC(OP_qf_EXP,	XMR(QF_EXPON),		NOFN,		NOFN,		"Expon\235",	"INV-Expon")
-	FUNC(OP_pdf_B,	XMR(PDF_BINOMIAL),	NOFN,		NOFN,		"Binom\276",	"Binom-p")
-	FUNC(OP_cdf_B,	XMR(CDF_BINOMIAL),	NOFN,		NOFN,		"Binom",	CNULL)
-	FUNC(OP_qf_B,	XMR(QF_BINOMIAL),	NOFN,		NOFN,		"Binom\235",	"INV-Binom")
-	FUNC(OP_pdf_Plam, XMR(PDF_POISSON),	NOFN,		NOFN,		"Pois\252\276",	"Pois-p")
-	FUNC(OP_cdf_Plam, XMR(CDF_POISSON),	NOFN,		NOFN,		"Pois\252",	"Pois")
-	FUNC(OP_qf_Plam,  XMR(QF_POISSON),	NOFN,		NOFN,		"Pois\252\235",	"INV-Pois")
-	FUNC(OP_pdf_P,	XMR(PDF_POIS2),		NOFN,		NOFN,		"Poiss\276",	"Pois2-p")
-	FUNC(OP_cdf_P,	XMR(CDF_POIS2),		NOFN,		NOFN,		"Poiss",	"Pois2")
-	FUNC(OP_qf_P,	XMR(QF_POIS2),		NOFN,		NOFN,		"Poiss\235",	"INV-Pois2")
-	FUNC(OP_pdf_G,	XMR(PDF_GEOM),		NOFN,		NOFN,		"Geom\276",	"Geom-p")
-	FUNC(OP_cdf_G,	XMR(CDF_GEOM),		NOFN,		NOFN,		"Geom",		CNULL)
-	FUNC(OP_qf_G,	XMR(QF_GEOM),		NOFN,		NOFN,		"Geom\235",	"INV-Geom")
-	FUNC(OP_pdf_N,	XMR(PDF_NORMAL),	NOFN,		NOFN,		"Norml\276",	"Norml-p")
-	FUNC(OP_cdf_N,	XMR(CDF_NORMAL),	NOFN,		NOFN,		"Norml",	CNULL)
-	FUNC(OP_qf_N,	XMR(QF_NORMAL),		NOFN,		NOFN,		"Norml\235",	"INV-Norml")
-	FUNC(OP_pdf_LN,	XMR(PDF_LOGNORMAL),	NOFN,		NOFN,		"LgNrm\276",	"LgNorm-p")
-	FUNC(OP_cdf_LN,	XMR(CDF_LOGNORMAL),	NOFN,		NOFN,		"LgNrm",	CNULL)
-	FUNC(OP_qf_LN,	XMR(QF_LOGNORMAL),	NOFN,		NOFN,		"LgNrm\235",	"INV-LgNorm")
-	FUNC(OP_pdf_LG,	XMR(PDF_LOGIT),		NOFN,		NOFN,		"Logis\276",	"Logis-p")
-	FUNC(OP_cdf_LG,	XMR(CDF_LOGIT),		NOFN,		NOFN,		"Logis",	CNULL)
-	FUNC(OP_qf_LG,	XMR(QF_LOGIT),		NOFN,		NOFN,		"Logis\235",	"INV-Logis")
-	FUNC(OP_pdf_C,	XMR(PDF_CAUCHY),	NOFN,		NOFN,		"Cauch\276",	"Cauch-p")
-	FUNC(OP_cdf_C,	XMR(CDF_CAUCHY),	NOFN,		NOFN,		"Cauch",	CNULL)
-	FUNC(OP_qf_C,	XMR(QF_CAUCHY),		NOFN,		NOFN,		"Cauch\235",	"INV-Cauch")
+	FUNC(OP_FACT,	&decNumberFactorial,	&intMonadic,	"x!",		CNULL)
+	FUNC(OP_GAMMA,	&decNumberGamma,	&intMonadic,	"\202",		"GAMMA")
+	FUNC(OP_LNGAMMA,&decNumberLnGamma,	NOFN,		"LN\202",	"LNGAMMA")
+	FUNC(OP_DEG2RAD,&decNumberD2R,		NOFN,		"\005\015rad",	"DEG>RAD")
+	FUNC(OP_RAD2DEG,&decNumberR2D,		NOFN,		"rad\015\005",	"RAD>DEG")
+	FUNC(OP_DEG2GRD,&decNumberD2G,		NOFN,		"\005\015G",	"DEG>GRAD")
+	FUNC(OP_GRD2DEG,&decNumberG2D,		NOFN,		"G\015\005",	"GRAD>DEG")
+	FUNC(OP_RAD2GRD,&decNumberR2G,		NOFN,		"rad\015G",	"RAD>GRAD")
+	FUNC(OP_GRD2RAD,&decNumberG2R,		NOFN,		"G\015rad",	"GRAD>RAD")
+	FUNC(OP_CCHS,	NOFN,			NOFN,		"\024+/-",	"c+/-")
+	FUNC(OP_CCONJ,	NOFN,			NOFN,		"CONJ",		CNULL)
+	FUNC(OP_ERF,	XMR(ERF),		NOFN,		"erf",		CNULL)
+	FUNC(OP_ERFC,	XMR(ERFC),		NOFN,		"erfc",		CNULL)
+	FUNC(OP_pdf_Q,	XMR(PDF_Q), 		NOFN,		"\264(x)",	"phi(x)")
+	FUNC(OP_cdf_Q,	XMR(CDF_Q), 		NOFN,		"\224(x)",	"PHI(x)")
+	FUNC(OP_qf_Q,	XMR(QF_Q),  		NOFN,		"\224\235(p)",	"INV-PHI")
+	FUNC(OP_pdf_chi2, XMR(PDF_CHI2),	NOFN,		"\265\232\276",	"chi2-p")
+	FUNC(OP_cdf_chi2, XMR(CDF_CHI2),	NOFN,		"\265\232",	"CHI2")
+	FUNC(OP_qf_chi2,  XMR(QF_CHI2),		NOFN,		"\265\232INV",	"INV-CHI2")
+	FUNC(OP_pdf_T,	XMR(PDF_T),		NOFN,		"t\276(x)",	"t-p(x)")
+	FUNC(OP_cdf_T,	XMR(CDF_T),		NOFN,		"t(x)",		CNULL)
+	FUNC(OP_qf_T,	XMR(QF_T),		NOFN,		"t\235(p)",	"INV-t")
+	FUNC(OP_pdf_F,	XMR(PDF_F),		NOFN,		"F\276(x)",	"F-p(x)")
+	FUNC(OP_cdf_F,	XMR(CDF_F),		NOFN,		"F(x)",		CNULL)
+	FUNC(OP_qf_F,	XMR(QF_F),		NOFN,		"F\235(p)",	"INV-F")
+	FUNC(OP_pdf_WB,	XMR(PDF_WEIB),		NOFN,		"Weibl\276",	"Weibl-p")
+	FUNC(OP_cdf_WB,	XMR(CDF_WEIB),		NOFN,		"Weibl",	CNULL)
+	FUNC(OP_qf_WB,	XMR(QF_WEIB),		NOFN,		"Weibl\235",	"INV-Weibl")
+	FUNC(OP_pdf_EXP,XMR(PDF_EXPON),		NOFN,		"Expon\276",	"Expon-p")
+	FUNC(OP_cdf_EXP,XMR(CDF_EXPON),		NOFN,		"Expon",	CNULL)
+	FUNC(OP_qf_EXP,	XMR(QF_EXPON),		NOFN,		"Expon\235",	"INV-Expon")
+	FUNC(OP_pdf_B,	XMR(PDF_BINOMIAL),	NOFN,		"Binom\276",	"Binom-p")
+	FUNC(OP_cdf_B,	XMR(CDF_BINOMIAL),	NOFN,		"Binom",	CNULL)
+	FUNC(OP_qf_B,	XMR(QF_BINOMIAL),	NOFN,		"Binom\235",	"INV-Binom")
+	FUNC(OP_pdf_Plam, XMR(PDF_POISSON),	NOFN,		"Pois\252\276",	"Pois-p")
+	FUNC(OP_cdf_Plam, XMR(CDF_POISSON),	NOFN,		"Pois\252",	"Pois")
+	FUNC(OP_qf_Plam,  XMR(QF_POISSON),	NOFN,		"Pois\252\235",	"INV-Pois")
+	FUNC(OP_pdf_P,	XMR(PDF_POIS2),		NOFN,		"Poiss\276",	"Pois2-p")
+	FUNC(OP_cdf_P,	XMR(CDF_POIS2),		NOFN,		"Poiss",	"Pois2")
+	FUNC(OP_qf_P,	XMR(QF_POIS2),		NOFN,		"Poiss\235",	"INV-Pois2")
+	FUNC(OP_pdf_G,	XMR(PDF_GEOM),		NOFN,		"Geom\276",	"Geom-p")
+	FUNC(OP_cdf_G,	XMR(CDF_GEOM),		NOFN,		"Geom",		CNULL)
+	FUNC(OP_qf_G,	XMR(QF_GEOM),		NOFN,		"Geom\235",	"INV-Geom")
+	FUNC(OP_pdf_N,	XMR(PDF_NORMAL),	NOFN,		"Norml\276",	"Norml-p")
+	FUNC(OP_cdf_N,	XMR(CDF_NORMAL),	NOFN,		"Norml",	CNULL)
+	FUNC(OP_qf_N,	XMR(QF_NORMAL),		NOFN,		"Norml\235",	"INV-Norml")
+	FUNC(OP_pdf_LN,	XMR(PDF_LOGNORMAL),	NOFN,		"LgNrm\276",	"LgNorm-p")
+	FUNC(OP_cdf_LN,	XMR(CDF_LOGNORMAL),	NOFN,		"LgNrm",	CNULL)
+	FUNC(OP_qf_LN,	XMR(QF_LOGNORMAL),	NOFN,		"LgNrm\235",	"INV-LgNorm")
+	FUNC(OP_pdf_LG,	XMR(PDF_LOGIT),		NOFN,		"Logis\276",	"Logis-p")
+	FUNC(OP_cdf_LG,	XMR(CDF_LOGIT),		NOFN,		"Logis",	CNULL)
+	FUNC(OP_qf_LG,	XMR(QF_LOGIT),		NOFN,		"Logis\235",	"INV-Logis")
+	FUNC(OP_pdf_C,	XMR(PDF_CAUCHY),	NOFN,		"Cauch\276",	"Cauch-p")
+	FUNC(OP_cdf_C,	XMR(CDF_CAUCHY),	NOFN,		"Cauch",	CNULL)
+	FUNC(OP_qf_C,	XMR(QF_CAUCHY),		NOFN,		"Cauch\235",	"INV-Cauch")
 #ifdef INCLUDE_CDFU
-	FUNC(OP_cdfu_Q,	XMR(CDFU_Q),		NOFN,		NOFN,		"\224\277(x)",	"Q-u")
-	FUNC(OP_cdfu_chi2, XMR(CDFU_CHI2),	NOFN,		NOFN,		"\265\232\277",	"CHI2-u")
-	FUNC(OP_cdfu_T,	XMR(CDFU_T),		NOFN,		NOFN,		"t\277(x)",	"t-u")
-	FUNC(OP_cdfu_F,	XMR(CDFU_F),		NOFN,		NOFN,		"F\277(x)",	"F-u")
-	FUNC(OP_cdfu_WB, XMR(CDFU_WEIB),	NOFN,		NOFN,		"Weibl\277",	"Weibl-u")
-	FUNC(OP_cdfu_EXP, XMR(CDFU_EXPON),	NOFN,		NOFN,		"Expon\277",	"Expon-u")
-	FUNC(OP_cdfu_B,	XMR(CDFU_BINOMIAL),	NOFN,		NOFN,		"Binom\277",	"Binom-u")
-	FUNC(OP_cdfu_Plam, XMR(CDFU_POISSON),	NOFN,		NOFN,		"Pois\252\277",	"Pois-u")
-	FUNC(OP_cdfu_P,	XMR(CDFU_POIS2),	NOFN,		NOFN,		"Poiss\277",	"Pois2-u")
-	FUNC(OP_cdfu_G,	XMR(CDFU_GEOM),		NOFN,		NOFN,		"Geom\277",	"Geom-u")
-	FUNC(OP_cdfu_N,	XMR(CDFU_NORMAL),	NOFN,		NOFN,		"Norml\277",	"Norml-u")
-	FUNC(OP_cdfu_LN, XMR(CDFU_LOGNORMAL),	NOFN,		NOFN,		"LgNrm\277",	"LgNrm-u")
-	FUNC(OP_cdfu_LG, XMR(CDFU_LOGIT),	NOFN,		NOFN,		"Logis\277",	"Logis-u")
-	FUNC(OP_cdfu_C,	XMR(CDFU_CAUCHY),	NOFN,		NOFN,		"Cauch\277",	"Cauch-u")
+	FUNC(OP_cdfu_Q,	XMR(CDFU_Q),		NOFN,		"\224\277(x)",	"Q-u")
+	FUNC(OP_cdfu_chi2, XMR(CDFU_CHI2),	NOFN,		"\265\232\277",	"CHI2-u")
+	FUNC(OP_cdfu_T,	XMR(CDFU_T),		NOFN,		"t\277(x)",	"t-u")
+	FUNC(OP_cdfu_F,	XMR(CDFU_F),		NOFN,		"F\277(x)",	"F-u")
+	FUNC(OP_cdfu_WB, XMR(CDFU_WEIB),	NOFN,		"Weibl\277",	"Weibl-u")
+	FUNC(OP_cdfu_EXP, XMR(CDFU_EXPON),	NOFN,		"Expon\277",	"Expon-u")
+	FUNC(OP_cdfu_B,	XMR(CDFU_BINOMIAL),	NOFN,		"Binom\277",	"Binom-u")
+	FUNC(OP_cdfu_Plam, XMR(CDFU_POISSON),	NOFN,		"Pois\252\277",	"Pois-u")
+	FUNC(OP_cdfu_P,	XMR(CDFU_POIS2),	NOFN,		"Poiss\277",	"Pois2-u")
+	FUNC(OP_cdfu_G,	XMR(CDFU_GEOM),		NOFN,		"Geom\277",	"Geom-u")
+	FUNC(OP_cdfu_N,	XMR(CDFU_NORMAL),	NOFN,		"Norml\277",	"Norml-u")
+	FUNC(OP_cdfu_LN, XMR(CDFU_LOGNORMAL),	NOFN,		"LgNrm\277",	"LgNrm-u")
+	FUNC(OP_cdfu_LG, XMR(CDFU_LOGIT),	NOFN,		"Logis\277",	"Logis-u")
+	FUNC(OP_cdfu_C,	XMR(CDFU_CAUCHY),	NOFN,		"Cauch\277",	"Cauch-u")
 #endif
-	FUNC(OP_xhat,	&stats_xhat,		NOFN,		NOFN,		"\031",		"FCSTx")
-	FUNC(OP_yhat,	&stats_yhat,		NOFN,		NOFN,		"\032",		"FCSTy")
-	FUNC(OP_sigper,	&stats_sigper,		NOFN,		NOFN,		"%\221",	"%SUM")
-	FUNC(OP_PERCNT,	XMR(PERCENT),		NOFN,		NOFN,		"%",		CNULL)
-	FUNC(OP_PERCHG,	XMR(PERCHG),		NOFN,		NOFN,		"\203%",	"%CH")
-	FUNC(OP_PERTOT,	XMR(PERTOT),		NOFN,		NOFN,		"%T",		CNULL)
-	FUNC(OP_HMS2,	&decNumberHMS2HR,	NOFN,		NOFN,		"\015HR",	">HR")
-	FUNC(OP_2HMS,	&decNumberHR2HMS,	NOFN,		NOFN,		"\015H.MS",	">H.MS")
-	FUNC(OP_NOT,	&decNumberNot,		NOFN,		&intNot,	"NOT",		CNULL)
-	FUNC(OP_BITCNT,	NOFN,			NOFN,		&intNumBits,	"nBITS",	CNULL)
-	FUNC(OP_MIRROR,	NOFN,			NOFN,		&intMirror,	"MIRROR",	CNULL)
-	FUNC(OP_DOWK,	&dateDayOfWeek,		NOFN,		NOFN,		"WDAY",		CNULL)
-	FUNC(OP_D2J,	&dateToJ,		NOFN,		NOFN,		"D\015J",	"D>J")
-	FUNC(OP_J2D,	&dateFromJ,		NOFN,		NOFN,		"J\015D",	"J>D")
-	FUNC(OP_DEGC_F,	&convC2F,		NOFN,		NOFN,		"\005C\015\005F", "C>F")
-	FUNC(OP_DEGF_C,	&convF2C,		NOFN,		NOFN,		"\005F\015\005C", "F>C")
-	FUNC(OP_DB_AR,	&convDB2AR,		NOFN,		NOFN,		"dB\015ar.",	"dB>ar.")
-	FUNC(OP_AR_DB,	&convAR2DB,		NOFN,		NOFN,		"ar.\015dB",	"ar.>dB")
-	FUNC(OP_DB_PR,	&convDB2PR,		NOFN,		NOFN,		"dB\015pr.",	"dB>pr.")
-	FUNC(OP_PR_DB,	&convPR2DB,		NOFN,		NOFN,		"pr.\015dB",	"pr.>dB")
-	FUNC(OP_ZETA,	XMR(ZETA),		NOFN,		NOFN,		"\245",		"ZETA")
-	FUNC(OP_Bn,	XMR(Bn),		NOFN,		NOFN,		"B\275",	"Bn")
-	FUNC(OP_BnS,	XMR(Bn_star),		NOFN,		NOFN,		"B\275\220",	"Bn*")
+	FUNC(OP_xhat,	&stats_xhat,		NOFN,		"\031",		"FCSTx")
+	FUNC(OP_yhat,	&stats_yhat,		NOFN,		"\032",		"FCSTy")
+	FUNC(OP_sigper,	&stats_sigper,		NOFN,		"%\221",	"%SUM")
+	FUNC(OP_PERCNT,	XMR(PERCENT),		NOFN,		"%",		CNULL)
+	FUNC(OP_PERCHG,	XMR(PERCHG),		NOFN,		"\203%",	"%CH")
+	FUNC(OP_PERTOT,	XMR(PERTOT),		NOFN,		"%T",		CNULL)
+	FUNC(OP_HMS2,	&decNumberHMS2HR,	NOFN,		"\015HR",	">HR")
+	FUNC(OP_2HMS,	&decNumberHR2HMS,	NOFN,		"\015H.MS",	">H.MS")
+	FUNC(OP_NOT,	&decNumberNot,		&intNot,	"NOT",		CNULL)
+	FUNC(OP_BITCNT,	NOFN,			&intNumBits,	"nBITS",	CNULL)
+	FUNC(OP_MIRROR,	NOFN,			&intMirror,	"MIRROR",	CNULL)
+	FUNC(OP_DOWK,	&dateDayOfWeek,		NOFN,		"WDAY",		CNULL)
+	FUNC(OP_D2J,	&dateToJ,		NOFN,		"D\015J",	"D>J")
+	FUNC(OP_J2D,	&dateFromJ,		NOFN,		"J\015D",	"J>D")
+	FUNC(OP_DEGC_F,	&convC2F,		NOFN,		"\005C\015\005F", "C>F")
+	FUNC(OP_DEGF_C,	&convF2C,		NOFN,		"\005F\015\005C", "F>C")
+	FUNC(OP_DB_AR,	&convDB2AR,		NOFN,		"dB\015ar.",	"dB>ar.")
+	FUNC(OP_AR_DB,	&convAR2DB,		NOFN,		"ar.\015dB",	"ar.>dB")
+	FUNC(OP_DB_PR,	&convDB2PR,		NOFN,		"dB\015pr.",	"dB>pr.")
+	FUNC(OP_PR_DB,	&convPR2DB,		NOFN,		"pr.\015dB",	"pr.>dB")
+	FUNC(OP_ZETA,	XMR(ZETA),		NOFN,		"\245",		"ZETA")
+	FUNC(OP_Bn,	XMR(Bn),		NOFN,		"B\275",	"Bn")
+	FUNC(OP_BnS,	XMR(Bn_star),		NOFN,		"B\275\220",	"Bn*")
 
 #ifdef INCLUDE_EASTER
-	FUNC(OP_EASTER,	&dateEaster,		NOFN,		NOFN,		"EASTER",	CNULL)
+	FUNC(OP_EASTER,	&dateEaster,		NOFN,		"EASTER",	CNULL)
 #endif
 #ifdef INCLUDE_FACTOR
-	FUNC(OP_FACTOR,	&decFactor,		NOFN,		&intFactor,	"FACTOR",	CNULL)
+	FUNC(OP_FACTOR,	&decFactor,		&intFactor,	"FACTOR",	CNULL)
 #endif
-	FUNC(OP_DATE_YEAR, &dateExtraction,	NOFN,		NOFN,		"YEAR",		CNULL)
-	FUNC(OP_DATE_MONTH, &dateExtraction,	NOFN,		NOFN,		"MONTH",	CNULL)
-	FUNC(OP_DATE_DAY, &dateExtraction,	NOFN,		NOFN,		"DAY",		CNULL)
+	FUNC(OP_DATE_YEAR, &dateExtraction,	NOFN,		"YEAR",		CNULL)
+	FUNC(OP_DATE_MONTH, &dateExtraction,	NOFN,		"MONTH",	CNULL)
+	FUNC(OP_DATE_DAY, &dateExtraction,	NOFN,		"DAY",		CNULL)
 #ifdef INCLUDE_USER_IO
-	FUNC(OP_RECV1,	&decRecv,		NOFN,		&intRecv,	"RECV1",	CNULL)
+	FUNC(OP_RECV1,	&decRecv,		&intRecv,	"RECV1",	CNULL)
 #endif
 #ifdef INCLUDE_MANTISSA
-	FUNC(OP_MANTISSA, &decNumberMantissa,	NOFN,		NOFN,		"MANT",		CNULL)
-	FUNC(OP_EXPONENT, &decNumberExponent,	NOFN,		NOFN,		"EXPT",		CNULL)
-	FUNC(OP_ULP,	  &decNumberULP,	NOFN,		XMI(int_ULP),	"ULP",		CNULL)
+	FUNC(OP_MANTISSA, &decNumberMantissa,	NOFN,		"MANT",		CNULL)
+	FUNC(OP_EXPONENT, &decNumberExponent,	NOFN,		"EXPT",		CNULL)
+	FUNC(OP_ULP,	  &decNumberULP,	XMI(int_ULP),	"ULP",		CNULL)
 #endif
-	FUNC(OP_MAT_ALL, &matrix_all,		NOFN,		NOFN,		"M-ALL",	CNULL)
-	FUNC(OP_MAT_DIAG, &matrix_diag,		NOFN,		NOFN,		"M-DIAG",	CNULL)
-	FUNC(OP_MAT_TRN, &matrix_transpose,	NOFN,		NOFN,		"TRANSP",	CNULL)
-	FUNC(OP_MAT_RQ,	&matrix_rowq,		NOFN,		NOFN,		"nROW",		CNULL)
-	FUNC(OP_MAT_CQ,	&matrix_colq,		NOFN,		NOFN,		"nCOL",		CNULL)
-	FUNC(OP_MAT_IJ,	&matrix_getrc,		NOFN,		NOFN,		"M.IJ",		CNULL)
-	FUNC(OP_MAT_DET, &matrix_determinant,	NOFN,		NOFN,		"DET",		CNULL)
+	FUNC(OP_MAT_ALL, &matrix_all,		NOFN,		"M-ALL",	CNULL)
+	FUNC(OP_MAT_DIAG, &matrix_diag,		NOFN,		"M-DIAG",	CNULL)
+	FUNC(OP_MAT_TRN, &matrix_transpose,	NOFN,		"TRANSP",	CNULL)
+	FUNC(OP_MAT_RQ,	&matrix_rowq,		NOFN,		"nROW",		CNULL)
+	FUNC(OP_MAT_CQ,	&matrix_colq,		NOFN,		"nCOL",		CNULL)
+	FUNC(OP_MAT_IJ,	&matrix_getrc,		NOFN,		"M.IJ",		CNULL)
+	FUNC(OP_MAT_DET, &matrix_determinant,	NOFN,		"DET",		CNULL)
 #ifdef MATRIX_LU_DECOMP
-	FUNC(OP_MAT_LU, &matrix_lu_decomp,	NOFN,		NOFN,		"M.LU",		CNULL)
+	FUNC(OP_MAT_LU, &matrix_lu_decomp,	NOFN,		"M.LU",		CNULL)
 #endif
 #ifdef INCLUDE_XROM_DIGAMMA
-	FUNC(OP_DIGAMMA,XMR(DIGAMMA),		XMC(CPX_DIGAMMA),	NOFN,	"\226",		"DIGAMMA")
+	FUNC(OP_DIGAMMA,XMR(DIGAMMA),		NOFN,		"\226",		"DIGAMMA")
 #endif
 #undef FUNC
 };
@@ -319,15 +320,15 @@ const struct monfunc monfuncs[ NUM_MONADIC ] = {
  * validate this only if debugging is enabled.
  */
 #ifdef COMPILE_CATALOGUES
-#define FUNC(name, d, c, i, fn, alias) { #d, #c, #i, fn, alias },
+#define FUNC(name, d, i, fn, alias) { #d, #i, fn, alias },
 #elif DEBUG
-#define FUNC(name, d, c, i, fn, alias) { name, d, c, i, fn, alias },
+#define FUNC(name, d, i, fn, alias) { name, d, i, fn, alias },
 #elif COMMANDS_PASS == 1
-#define FUNC(name, d, c, i, fn, alias) { 0xaa55, 0x55aa, 0xa55a, fn },
+#define FUNC(name, d, i, fn, alias) { 0xaa55, 0xa55a, fn },
 #elif defined(REALBUILD)
-#define FUNC(name, d, c, i, fn, alias) { d, c, i, fn },
+#define FUNC(name, d, i, fn, alias) { d, i, fn },
 #else
-#define FUNC(name, d, c, i, fn, alias) { d, c, i, fn, alias },
+#define FUNC(name, d, i, fn, alias) { d, i, fn, alias },
 #endif
 
 #if COMMANDS_PASS == 2
@@ -335,74 +336,74 @@ CMDTAB const struct dyfunc_cmdtab dyfuncs_ct[ NUM_DYADIC ] = {
 #else
 const struct dyfunc dyfuncs[ NUM_DYADIC ] = {
 #endif
-	FUNC(OP_POW,	&dn_power,		&cmplxPower,	&intPower,	"y\234",	"y^x")
-	FUNC(OP_ADD,	&dn_add,		&cmplxAdd,	&intAdd,	"+",		CNULL)
-	FUNC(OP_SUB,	&dn_subtract,		&cmplxSubtract,	&intSubtract,	"-",		CNULL)
-	FUNC(OP_MUL,	&dn_multiply,		&cmplxMultiply,	&intMultiply,	"\034",		"*")
-	FUNC(OP_DIV,	&dn_divide,		&cmplxDivide,	&intDivide,	"/",		CNULL)
+	FUNC(OP_POW,	&dn_power,		&intPower,	"y\234",	"y^x")
+	FUNC(OP_ADD,	&dn_add,		&intAdd,	"+",		CNULL)
+	FUNC(OP_SUB,	&dn_subtract,		&intSubtract,	"-",		CNULL)
+	FUNC(OP_MUL,	&dn_multiply,		&intMultiply,	"\034",		"*")
+	FUNC(OP_DIV,	&dn_divide,		&intDivide,	"/",		CNULL)
 #ifdef INCLUDE_INTEGER_DIVIDE
-	FUNC(OP_IDIV,	XDR(IDIV),		XDC(cpx_IDIV),	&intDivide,	"IDIV",		CNULL)
+	FUNC(OP_IDIV,	XDR(IDIV),		&intDivide,	"IDIV",		CNULL)
 #endif
-	FUNC(OP_MOD,	&decNumberBigMod,	NOFN,		&intMod,	"RMDR",		CNULL)
+	FUNC(OP_MOD,	&decNumberBigMod,	&intMod,	"RMDR",		CNULL)
 #ifdef INCLUDE_MOD41
-	FUNC(OP_MOD41,	&decNumberBigMod,	NOFN,		&intMod,	"MOD",		CNULL)
+	FUNC(OP_MOD41,	&decNumberBigMod,	&intMod,	"MOD",		CNULL)
 #endif
-	FUNC(OP_LOGXY,	&decNumberLogxy,	XDC(cpx_LOGXY),	&intDyadic,	"LOG\213",	"LOGx")
-	FUNC(OP_MIN,	&dn_min,		NOFN,		&intMin,	"MIN",		CNULL)
-	FUNC(OP_MAX,	&dn_max,		NOFN,		&intMax,	"MAX",		CNULL)
-	FUNC(OP_ATAN2,	&decNumberArcTan2,	NOFN,		NOFN,		"ANGLE",	CNULL)
-	FUNC(OP_BETA,	XDR(beta),		XDC(cpx_beta),	NOFN,		"\241",		"BETA")
-	FUNC(OP_LNBETA,	&decNumberLnBeta,	XDC(cpx_lnbeta),NOFN,		"LN\241",	"LNBETA")
-	FUNC(OP_GAMMAg,	&decNumberGammap,	NOFN,		NOFN,		"\242\213\214",	"gammaxy")
-	FUNC(OP_GAMMAG,	&decNumberGammap,	NOFN,		NOFN,		"\202\213\214",	"GAMMAxy")
-	FUNC(OP_GAMMAP,	&decNumberGammap,	NOFN,		NOFN,		"I\202\276",	"IGAMMAP")
-	FUNC(OP_GAMMAQ,	&decNumberGammap,	NOFN,		NOFN,		"I\202\223",	"IGAMMAQ")
+	FUNC(OP_LOGXY,	&decNumberLogxy,	&intDyadic,	"LOG\213",	"LOGx")
+	FUNC(OP_MIN,	&dn_min,		&intMin,	"MIN",		CNULL)
+	FUNC(OP_MAX,	&dn_max,		&intMax,	"MAX",		CNULL)
+	FUNC(OP_ATAN2,	&decNumberArcTan2,	NOFN,		"ANGLE",	CNULL)
+	FUNC(OP_BETA,	XDR(beta),		NOFN,		"\241",		"BETA")
+	FUNC(OP_LNBETA,	&decNumberLnBeta,	NOFN,		"LN\241",	"LNBETA")
+	FUNC(OP_GAMMAg,	&decNumberGammap,	NOFN,		"\242\213\214",	"gammaxy")
+	FUNC(OP_GAMMAG,	&decNumberGammap,	NOFN,		"\202\213\214",	"GAMMAxy")
+	FUNC(OP_GAMMAP,	&decNumberGammap,	NOFN,		"I\202\276",	"IGAMMAP")
+	FUNC(OP_GAMMAQ,	&decNumberGammap,	NOFN,		"I\202\223",	"IGAMMAQ")
 #ifdef INCLUDE_ELLIPTIC
-	FUNC(OP_SN,	&decNumberSN,		&cmplxSN,	NOFN,		"SN",		CNULL)
-	FUNC(OP_CN,	&decNumberCN,		&cmplxCN,	NOFN,		"CN",		CNULL)
-	FUNC(OP_DN,	&decNumberDN,		&cmplxDN,	NOFN,		"DN",		CNULL)
+	FUNC(OP_SN,	&decNumberSN,		NOFN,		"SN",		CNULL)
+	FUNC(OP_CN,	&decNumberCN,		NOFN,		"CN",		CNULL)
+	FUNC(OP_DN,	&decNumberDN,		NOFN,		"DN",		CNULL)
 #endif
-	FUNC(OP_COMB,	&decNumberComb,		XDC(CPX_COMB),	&intDyadic,	"COMB",		CNULL)
-	FUNC(OP_PERM,	&decNumberPerm,		XDC(CPX_PERM),	&intDyadic,	"PERM",		CNULL)
-	FUNC(OP_PERMG,	XDR(PERMARGIN),		NOFN,		NOFN,		"%+MG",		CNULL)
-	FUNC(OP_MARGIN,	XDR(MARGIN),		NOFN,		NOFN,		"%MG",		CNULL)
-	FUNC(OP_PARAL,	XDR(PARL),		XDC(CPX_PARL),	XDI(PARL),	"||",		CNULL)
-	FUNC(OP_AGM,	XDR(AGM),		XDC(CPX_AGM),	NOFN,		"AGM",		CNULL)
-	FUNC(OP_HMSADD,	&decNumberHMSAdd,	NOFN,		NOFN,		"H.MS+",	CNULL)
-	FUNC(OP_HMSSUB,	&decNumberHMSSub,	NOFN,		NOFN,		"H.MS-",	CNULL)
-	FUNC(OP_GCD,	&decNumberGCD,		NOFN,		&intGCD,	"GCD",		CNULL)
-	FUNC(OP_LCM,	&decNumberLCM,		NOFN,		&intLCM,	"LCM",		CNULL)
+	FUNC(OP_COMB,	&decNumberComb,		&intDyadic,	"COMB",		CNULL)
+	FUNC(OP_PERM,	&decNumberPerm,		&intDyadic,	"PERM",		CNULL)
+	FUNC(OP_PERMG,	XDR(PERMARGIN),		NOFN,		"%+MG",		CNULL)
+	FUNC(OP_MARGIN,	XDR(MARGIN),		NOFN,		"%MG",		CNULL)
+	FUNC(OP_PARAL,	XDR(PARL),		XDI(PARL),	"||",		CNULL)
+	FUNC(OP_AGM,	XDR(AGM),		NOFN,		"AGM",		CNULL)
+	FUNC(OP_HMSADD,	&decNumberHMSAdd,	NOFN,		"H.MS+",	CNULL)
+	FUNC(OP_HMSSUB,	&decNumberHMSSub,	NOFN,		"H.MS-",	CNULL)
+	FUNC(OP_GCD,	&decNumberGCD,		&intGCD,	"GCD",		CNULL)
+	FUNC(OP_LCM,	&decNumberLCM,		&intLCM,	"LCM",		CNULL)
 
-	FUNC(OP_LAND,	&decNumberBooleanOp,	NOFN,		&intBooleanOp,	"AND",		CNULL)
-	FUNC(OP_LOR,	&decNumberBooleanOp,	NOFN,		&intBooleanOp,	"OR",		CNULL)
-	FUNC(OP_LXOR,	&decNumberBooleanOp,	NOFN,		&intBooleanOp,	"XOR",		CNULL)
-	FUNC(OP_LNAND,	&decNumberBooleanOp,	NOFN,		&intBooleanOp,	"NAND",		CNULL)
-	FUNC(OP_LNOR,	&decNumberBooleanOp,	NOFN,		&intBooleanOp,	"NOR",		CNULL)
-	FUNC(OP_LXNOR,	&decNumberBooleanOp,	NOFN,		&intBooleanOp,	"XNOR",		CNULL)
+	FUNC(OP_LAND,	&decNumberBooleanOp,	&intBooleanOp,	"AND",		CNULL)
+	FUNC(OP_LOR,	&decNumberBooleanOp,	&intBooleanOp,	"OR",		CNULL)
+	FUNC(OP_LXOR,	&decNumberBooleanOp,	&intBooleanOp,	"XOR",		CNULL)
+	FUNC(OP_LNAND,	&decNumberBooleanOp,	&intBooleanOp,	"NAND",		CNULL)
+	FUNC(OP_LNOR,	&decNumberBooleanOp,	&intBooleanOp,	"NOR",		CNULL)
+	FUNC(OP_LXNOR,	&decNumberBooleanOp,	&intBooleanOp,	"XNOR",		CNULL)
 
-	FUNC(OP_DTADD,	XDR(DATE_ADD),		NOFN,		NOFN,		"DAYS+",	CNULL)
-	FUNC(OP_DTDIF,	XDR(DATE_DELTA),	NOFN,		NOFN,		"\203DAYS",	"DDAYS")
+	FUNC(OP_DTADD,	XDR(DATE_ADD),		NOFN,		"DAYS+",	CNULL)
+	FUNC(OP_DTDIF,	XDR(DATE_DELTA),	NOFN,		"\203DAYS",	"DDAYS")
 
-	FUNC(OP_LEGENDRE_PN,	XDR(LegendrePn),	NOFN,	NOFN,		"P\275",	"Pn")
-	FUNC(OP_CHEBYCHEV_TN,	XDR(ChebychevTn),	NOFN,	NOFN,		"T\275",	"Tn")
-	FUNC(OP_CHEBYCHEV_UN,	XDR(ChebychevUn),	NOFN,	NOFN,		"U\275",	"Un")
-	FUNC(OP_LAGUERRE,	XDR(LaguerreLn),	NOFN,	NOFN,		"L\275",	"Ln")
-	FUNC(OP_HERMITE_HE,	XDR(HermiteHe),		NOFN,	NOFN,		"H\275",	"Hn")
-	FUNC(OP_HERMITE_H,	XDR(HermiteH),		NOFN,	NOFN,		"H\275\276",	"Hnp")
+	FUNC(OP_LEGENDRE_PN,	XDR(LegendrePn),	NOFN,	"P\275",	"Pn")
+	FUNC(OP_CHEBYCHEV_TN,	XDR(ChebychevTn),	NOFN,	"T\275",	"Tn")
+	FUNC(OP_CHEBYCHEV_UN,	XDR(ChebychevUn),	NOFN,	"U\275",	"Un")
+	FUNC(OP_LAGUERRE,	XDR(LaguerreLn),	NOFN,	"L\275",	"Ln")
+	FUNC(OP_HERMITE_HE,	XDR(HermiteHe),		NOFN,	"H\275",	"Hn")
+	FUNC(OP_HERMITE_H,	XDR(HermiteH),		NOFN,	"H\275\276",	"Hnp")
 #ifdef INCLUDE_XROOT
-	FUNC(OP_XROOT,	&decNumberXRoot,	&cmplxXRoot,	&intDyadic,	"\234\003y",	"XROOT")
+	FUNC(OP_XROOT,	&decNumberXRoot,	&intDyadic,	"\234\003y",	"XROOT")
 #endif
-	FUNC(OP_MAT_ROW, &matrix_row,		NOFN,		NOFN,		"M-ROW",	CNULL)
-	FUNC(OP_MAT_COL, &matrix_col,		NOFN,		NOFN,		"M-COL",	CNULL)
-	FUNC(OP_MAT_COPY, &matrix_copy,		NOFN,		NOFN,		"M.COPY",	CNULL)
+	FUNC(OP_MAT_ROW, &matrix_row,		NOFN,		"M-ROW",	CNULL)
+	FUNC(OP_MAT_COL, &matrix_col,		NOFN,		"M-COL",	CNULL)
+	FUNC(OP_MAT_COPY, &matrix_copy,		NOFN,		"M.COPY",	CNULL)
 #ifdef INCLUDE_MANTISSA
-	FUNC(OP_NEIGHBOUR,&decNumberNeighbour,	NOFN,		NOFN,		"NEIGHB",	CNULL)
+	FUNC(OP_NEIGHBOUR,&decNumberNeighbour,	NOFN,		"NEIGHB",	CNULL)
 #endif
 #ifdef INCLUDE_XROM_BESSEL
-	FUNC(OP_BESJN,	XDR(BES_JN),		XDC(CPX_JN),	NOFN,		"Jn",		CNULL)
-	FUNC(OP_BESIN,	XDR(BES_IN),		XDC(CPX_IN),	NOFN,		"In",		CNULL)
-	FUNC(OP_BESYN,	XDR(BES_YN),		XDC(CPX_YN),	NOFN,		"Yn",		CNULL)
-	FUNC(OP_BESKN,	XDR(BES_KN),		XDC(CPX_KN),	NOFN,		"Kn",		CNULL)
+	FUNC(OP_BESJN,	XDR(BES_JN),		NOFN,		"Jn",		CNULL)
+	FUNC(OP_BESIN,	XDR(BES_IN),		NOFN,		"In",		CNULL)
+	FUNC(OP_BESYN,	XDR(BES_YN),		NOFN,		"Yn",		CNULL)
+	FUNC(OP_BESKN,	XDR(BES_KN),		NOFN,		"Kn",		CNULL)
 #endif
 #undef FUNC
 };
@@ -630,7 +631,7 @@ const struct niladic niladics[ NUM_NILADIC ] = {
 	FUNC0(OP_SETIND,	XNIL(SETIND),		"SETIND",	CNULL)
 	FUNC0(OP_SETCHN,	XNIL(SETCHN),		"SETCHN",	CNULL)
 	FUNC0(OP_SETJPN,	XNIL(SETJAP),		"SETJPN",	CNULL)
-	FUNC0(OP_WHO,		XNIL(WHO),		"WHO",		CNULL)	
+	FUNC0(OP_WHO,		XNIL(WHO),		"WHO",		CNULL)
 
 	FUNC0(OP_XEQALPHA,	&op_gtoalpha,		"XEQ\240",	"XEQa")
 	FUNC0(OP_GTOALPHA,	&op_gtoalpha,		"GTO\240",	"GTOa")
@@ -767,7 +768,6 @@ CMDTAB const struct argcmd_cmdtab argcmds_ct[ NUM_RARG ] = {
 const struct argcmd argcmds[ NUM_RARG ] = {
 #endif
 	CMDnoI(RARG_CONST,	&cmdconst,	NUM_CONSTS,		"#",		CNULL)
-	CMDnoI(RARG_CONST_CMPLX,&cmdconst,	NUM_CONSTS,		"\024#",	"c#")
 	CMD(RARG_ERROR,		&cmderr,	MAX_ERROR,		"ERR",		CNULL)
 	CMDstk(RARG_STO, 	&cmdsto,				"STO",		CNULL)
 	CMDstk(RARG_STO_PL, 	&cmdsto,				"STO+",		CNULL)
@@ -939,7 +939,6 @@ const struct argcmd argcmds[ NUM_RARG ] = {
 	CMDnoI(RARG_INTNUM_CMPLX, &cmdconst,	256,			"\024#",	"c#")
 #ifdef INCLUDE_INDIRECT_CONSTS
 	CMD(RARG_IND_CONST,	  &cmdconst,	NUM_CONSTS,		"CNST",		CNULL)
-	CMD(RARG_IND_CONST_CMPLX, &cmdconst,	NUM_CONSTS,		"\024CNST",	"cCNST")
 #endif
 	/* INFRARED commands */
 	CMDstk(RARG_PRINT_REG,	IRA(cmdprintreg),			"\222r",	"P.r")

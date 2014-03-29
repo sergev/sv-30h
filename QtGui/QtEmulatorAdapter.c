@@ -68,8 +68,6 @@ int put_key(int key)
 	return put_key_adapter(key);
 }
 
-static int fshift_locked=0;
-static int gshift_locked=0;
 static int hshift_locked=0;
 
 enum shifts shift_down()
@@ -92,16 +90,6 @@ int is_not_shifted()
 int is_hshifted()
 {
 	return cur_shift()==SHIFT_H;
-}
-
-void set_fshift_locked(int a_fshift_locked)
-{
-	fshift_locked=a_fshift_locked;
-}
-
-void set_gshift_locked(int a_gshift_locked)
-{
-	gshift_locked=a_gshift_locked;
 }
 
 void set_hshift_locked(int an_hshift_locked)
@@ -348,11 +336,6 @@ int is_runmode()
 int is_catalogue_mode()
 {
 	return State2.catalogue!=CATALOGUE_NONE;
-}
-
-int is_complex_mode()
-{
-	return State2.cmplx;
 }
 
 char get_complex_prefix()

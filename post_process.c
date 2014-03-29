@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -91,8 +91,6 @@ int main(int argc, char *argv[])
         for ( i = 0; i < info->num_monadic; ++i ) {
                 fp = (int) info->p_monfuncs_ct[ i ].mondreal;
                 UPDATE( p_monfuncs[ i ].mondreal, 0xaa55, NUM_MONADIC );
-                fp = (int) info->p_monfuncs_ct[ i ].mondcmplx;
-                UPDATE( p_monfuncs[ i ].mondcmplx, 0x55aa, NUM_MONADIC );
                 fp = (int) info->p_monfuncs_ct[ i ].monint;
                 UPDATE( p_monfuncs[ i ].monint, 0xa55a, NUM_MONADIC );
         }
@@ -100,8 +98,6 @@ int main(int argc, char *argv[])
         for ( i = 0; i < info->num_dyadic; ++i ) {
                 fp = (int) info->p_dyfuncs_ct[ i ].dydreal;
                 UPDATE( p_dyfuncs[ i ].dydreal, 0xaa55, NUM_DYADIC );
-                fp = (int) info->p_dyfuncs_ct[ i ].dydcmplx;
-                UPDATE( p_dyfuncs[ i ].dydcmplx, 0x55aa, NUM_DYADIC );
                 fp = (int) info->p_dyfuncs_ct[ i ].dydint;
                 UPDATE( p_dyfuncs[ i ].dydint, 0xa55a, NUM_DYADIC );
         }

@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -52,16 +52,16 @@
 
 /*
  *  Defines for some argument combinations for xIN
- */										
-#define NILADIC_0		(xIN_ARGS(0, 0))			
-#define NILADIC_1		(xIN_ARGS(0, 1))			
-#define NILADIC_2		(xIN_ARGS(0, 2))			
-#define NILADIC_1_COMPLEX	(NILADIC_1 | xIN_COMPLEX)		
-#define NILADIC_2_COMPLEX	(NILADIC_2 | xIN_COMPLEX)		
+ */
+#define NILADIC_0		(xIN_ARGS(0, 0))
+#define NILADIC_1		(xIN_ARGS(0, 1))
+#define NILADIC_2		(xIN_ARGS(0, 2))
+#define NILADIC_1_COMPLEX	(NILADIC_1 | xIN_COMPLEX)
+#define NILADIC_2_COMPLEX	(NILADIC_2 | xIN_COMPLEX)
 
-#define MONADIC			(xIN_ARGS(1, 1) | xIN_LASTX)		
-#define DYADIC			(xIN_ARGS(2, 1) | xIN_LASTX)		
-#define TRIADIC			(xIN_ARGS(3, 1) | xIN_LASTX)		
+#define MONADIC			(xIN_ARGS(1, 1) | xIN_LASTX)
+#define DYADIC			(xIN_ARGS(2, 1) | xIN_LASTX)
+#define TRIADIC			(xIN_ARGS(3, 1) | xIN_LASTX)
 
 #define MONADIC_COMPLEX		(MONADIC | xIN_COMPLEX)
 #define DYADIC_COMPLEX		(DYADIC  | xIN_COMPLEX)
@@ -105,34 +105,34 @@
 /*
  *  Include each routine here
  */
-#include "solve.wp34s"
-#include "integrate.wp34s"
-#include "derivative.wp34s"
-#include "prodsum.wp34s"
-#include "parallel.wp34s"
-#include "percent.wp34s"
-#include "agm.wp34s"
-#include "permutations.wp34s"
-#include "lambert_w.wp34s"
-#include "beta.wp34s"
-#include "gudermannian.wp34s"
-#include "error-function.wp34s"
-#include "distributions.wp34s"
-#include "orthopolys.wp34s"
+//#include "solve.wp34s"
+//#include "integrate.wp34s"
+//#include "derivative.wp34s"
+//#include "prodsum.wp34s"
+//#include "parallel.wp34s"
+//#include "percent.wp34s"
+//#include "agm.wp34s"
+//#include "permutations.wp34s"
+//#include "lambert_w.wp34s"
+//#include "beta.wp34s"
+//#include "gudermannian.wp34s"
+//#include "error-function.wp34s"
+//#include "distributions.wp34s"
+//#include "orthopolys.wp34s"
 #include "common.wp34s"
-#include "next_prime.wp34s"
-#include "date.wp34s"
-#include "modes.wp34s"
-#include "who.wp34s"
-#include "fibonacci.wp34s"
-#include "quadratic.wp34s"
+//#include "next_prime.wp34s"
+//#include "date.wp34s"
+//#include "modes.wp34s"
+//#include "who.wp34s"
+//#include "fibonacci.wp34s"
+//#include "quadratic.wp34s"
 
-#include "zeta.wp34s"
-#include "complex.wp34s"
-#include "integer.wp34s"
+//#include "zeta.wp34s"
+//#include "complex.wp34s"
+//#include "integer.wp34s"
 
-#include "bessel.wp34s"
-#include "digamma.wp34s"
+//#include "bessel.wp34s"
+//#include "digamma.wp34s"
 
 // Test
 #ifdef _DEBUG
@@ -142,4 +142,3 @@
 	ERR 1
 	xOUT xOUT_NORMAL
 #endif
-

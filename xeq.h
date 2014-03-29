@@ -203,7 +203,7 @@ extern _CONST struct _command_info {
  */
 struct monfunc
 {
-        unsigned short mondreal, mondcmplx, monint;
+        unsigned short mondreal, monint;
         _CONST char fname[NAME_LEN];
 };
 
@@ -222,7 +222,6 @@ struct monfunc
         unsigned short n;
 #endif
         FP_MONADIC_REAL mondreal;
-        FP_MONADIC_CMPLX mondcmplx;
         FP_MONADIC_INT  monint;
         const char fname[NAME_LEN];
 #if defined(COMPILE_CATALOGUES) || ! (defined(REALBUILD) || defined(POST_PROCESSING))
@@ -239,7 +238,7 @@ extern const struct monfunc monfuncs[];
  */
 struct dyfunc
 {
-        unsigned short dydreal, dydcmplx, dydint;
+        unsigned short dydreal, dydint;
         _CONST char fname[NAME_LEN];
 };
 
@@ -258,7 +257,6 @@ struct dyfunc
         unsigned short n;
 #endif
         FP_DYADIC_REAL dydreal;
-        FP_DYADIC_CMPLX dydcmplx;
         FP_DYADIC_INT  dydint;
         const char fname[NAME_LEN];
 #if defined(COMPILE_CATALOGUES) || ! (defined(REALBUILD) || defined(POST_PROCESSING))
@@ -851,7 +849,6 @@ enum nilop {
 /* Command that can take an argument */
 enum rarg {
         RARG_CONST,             // user visible constants
-        RARG_CONST_CMPLX,
         RARG_ERROR,
         /* STO and RCL must be in operator order */
         RARG_STO, RARG_STO_PL, RARG_STO_MI, RARG_STO_MU, RARG_STO_DV,
@@ -936,7 +933,6 @@ enum rarg {
         RARG_INTNUM_CMPLX,
 #ifdef INCLUDE_INDIRECT_CONSTS
         RARG_IND_CONST,
-        RARG_IND_CONST_CMPLX,
 #endif
         /* INFRARED commands */
         RARG_PRINT_REG, RARG_PRINT_BYTE, RARG_PRINT_CHAR, RARG_PRINT_TAB,

@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -22,7 +22,6 @@
 #include "xeq.h"
 
 #define CST(op, n)		RARG(RARG_CONST, op),
-#define CCST(op, n)		RARG(RARG_CONST_CMPLX, op),
 #define TRI(op, n)		op | OP_TRI,
 #define DYA(op, n)		op | OP_DYA,
 #define MON(op, n)		op | OP_MON,
@@ -60,7 +59,7 @@ static s_opcode program_xfcn[] = {
 	MON(OP_EXPM1,		"e^x-1")
 #ifdef INCLUDE_FACTOR
 	MON(OP_FACTOR,		"FACTOR")
-#endif 
+#endif
 	MON(OP_FIB,		"FIB")
 	MON(OP_FLOOR,		"FLOOR")
 	DYA(OP_GCD,		"GCD")
@@ -229,7 +228,7 @@ static s_opcode catalogue[] = {
 	MON(OP_EXPM1,		"e^x-1")
 #ifdef INCLUDE_FACTOR
 	MON(OP_FACTOR,		"FACTOR")
-#endif 
+#endif
 	MON(OP_FIB,		"FIB")
 	MON(OP_FLOOR,		"FLOOR")
 	DYA(OP_GCD,		"GCD")
@@ -391,11 +390,6 @@ static s_opcode cplx_catalogue[] = {
 #endif
 	NILIC(OP_DOTPROD,	"DOT")
 	NILIC(OP_CROSSPROD,	"CROSS")
-#ifndef INCLUDE_INTERNAL_CATALOGUE
-#ifdef INCLUDE_INDIRECT_CONSTS
-	RARGCMD(RARG_IND_CONST_CMPLX, "\024CNST")
-#endif
-#endif
 };
 
 static s_opcode sums_catalogue[] = {
@@ -528,7 +522,7 @@ static s_opcode int_catalogue[] = {
 	DYA(OP_LNOR,		"NOR")
 #ifdef INCLUDE_FACTOR
 	MON(OP_FACTOR,		"FACTOR")
-#endif 
+#endif
 	NILIC(OP_NEXTPRIME,	"NEXTP")
 	NILIC(OP_RJ,		"RJ")
 	RARGCMD(RARG_RL,	"RL")
@@ -836,7 +830,6 @@ static s_opcode internal_catalogue[] = {
 	RARGCMD(RARG_CONVERGED,	"CNVG?")
 #ifdef INCLUDE_INDIRECT_CONSTS
 	RARGCMD(RARG_IND_CONST, "CNST")
-	RARGCMD(RARG_IND_CONST_CMPLX, "\024CNST")
 #endif
 #ifdef _DEBUG
 	NILIC(OP_DEBUG,		"DBG")
@@ -1020,7 +1013,7 @@ static s_opcode conv_catalogue[] = {
 
 /* The alpha mode menus to access all the weird characters */
 static unsigned char alpha_symbols[] = {
-	',',	';',	':',	
+	',',	';',	':',
 	'\'',	'"',	'#',	'`',
 	'*',	'%',	'@',	'_',
 	'~',

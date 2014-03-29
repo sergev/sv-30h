@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -195,7 +195,7 @@ int local_levels(void) {
  *  The result depends on the RARG operation to allow for "alien" RCL commands
  */
 int local_regs_rarg(enum rarg op) {
-	const int dbl = op != RARG_sRCL && op != RARG_iRCL && (op == RARG_dRCL || is_dblmode()); 
+	const int dbl = op != RARG_sRCL && op != RARG_iRCL && (op == RARG_dRCL || is_dblmode());
 	return local_levels() >> (2 + dbl);
 }
 
@@ -213,7 +213,7 @@ int local_regs(void) {
 unsigned int global_regs_rarg(enum rarg op) {
 	if (is_dblmode() || op == RARG_dRCL) {
 		const int num_regs = NumRegs - STACK_SIZE - EXTRA_REG;
-		return op == RARG_sRCL || op == RARG_iRCL ? num_regs : num_regs >> 1; 
+		return op == RARG_sRCL || op == RARG_iRCL ? num_regs : num_regs >> 1;
 	}
 	else
 		return NumRegs;
@@ -248,7 +248,7 @@ void cmd_off(enum nilop op) {
 
 #ifndef state_pc
 unsigned int state_pc(void) {
-	return State.pc;	
+	return State.pc;
 }
 #endif
 static void raw_set_pc(unsigned int pc) {
@@ -290,7 +290,7 @@ static opcode get_opcode( const s_opcode *loc )
 }
 
 
-/* 
+/*
  * Return the program memory location specified.
  */
 opcode getprog(unsigned int pc) {
@@ -304,7 +304,7 @@ opcode getprog(unsigned int pc) {
 }
 
 
-/* 
+/*
  * Return the physical start-address of the current program
  */
 const s_opcode *get_current_prog(void) {
@@ -340,7 +340,7 @@ void set_pc(unsigned int pc) {
 static unsigned short int find_section_bounds(const unsigned int pc, const int endp, unsigned short int *const p_top) {
 	unsigned short int top, bottom;
 
-	if (endp && State2.runmode) { 
+	if (endp && State2.runmode) {
 		// Use the current program as bounds
 		top = ProgBegin;
 		bottom = ProgEnd;
@@ -350,7 +350,7 @@ static unsigned short int find_section_bounds(const unsigned int pc, const int e
 	else if (isXROM(pc)) {
 		top = addrXROM(1);
 		bottom = addrXROM(xrom_size);
-	} 
+	}
 	else if (isLIB(pc)) {
 		top = startLIB(pc);
 		bottom = top + sizeLIB(nLIB(pc)) - 1;
@@ -642,7 +642,7 @@ static int check_special(const decNumber *x) {
 		packed128_from_number(&d, x);
 		decimal128ToNumber(&d, &y);
 	}
-	else 
+	else
 	{
 		packed_from_number(&z, x);
 		decimal64ToNumber(&z, &y);
@@ -1176,7 +1176,7 @@ unsigned long long int getX_int_sgn(int *sgn) {
 static void int_from_register(int out, int in) {
 	int sgn;
 	unsigned long long int val;
-	
+
 	UState.intm = 0;	// Force real mode access
 	val = get_reg_n_int_sgn(in, &sgn);
 
@@ -1199,7 +1199,7 @@ void set_reg_n_int_sgn(int index, unsigned long long int val, int sgn) {
 	}
 }
 
-/* 
+/*
  *  Forced conversion from integer to register format.
  *  Leaves integer mode off after conversion.
  *  Destination may be in XROM register space
@@ -1208,7 +1208,7 @@ static void register_from_int(int out, int in, int called_from_xin) {
 	int sgn;
 	unsigned long long int val;
 	const int xin = XromFlags.xIN;
-	
+
 	if (called_from_xin)
 		XromFlags.xIN = 0;
 	UState.intm = 1;
@@ -1292,7 +1292,7 @@ void clrstk(enum nilop op) {
 
 
 /* Zero out all registers excluding the stack and lastx
- */	
+ */
 void clrreg(enum nilop op) {
 	const int local = local_regs();
 	process_cmdline_set_lift();
@@ -1330,11 +1330,7 @@ void clrretstk_pc(void) {
  *  Command to allow access to constants and small integers
  */
 void cmdconst(unsigned int arg, enum rarg op) {
-#ifdef INCLUDE_INDIRECT_CONSTS
-	if (op == RARG_INTNUM_CMPLX || op == RARG_CONST_CMPLX || op == RARG_IND_CONST_CMPLX) {
-#else
-	if (op == RARG_INTNUM_CMPLX || op == RARG_CONST_CMPLX) {
-#endif
+	if (op == RARG_INTNUM_CMPLX) {
 		lift2_if_enabled();
 		zero_Y();
 		set_was_complex();
@@ -1345,7 +1341,7 @@ void cmdconst(unsigned int arg, enum rarg op) {
 		setX_int_sgn(arg, 0);
 	else if (is_intmode())
 		bad_mode_error();
-	else 
+	else
 		copyreg(StackBase, get_const(arg, is_dblmode()));
 }
 
@@ -2066,7 +2062,7 @@ void cmdmultigto(const opcode o, enum multiops mopr) {
 		// In XROM the command behaves differently!
 		unsigned short int target = findmultilbl(o, 0);
 		if (target != 0)
-			usergsb_common(target); 
+			usergsb_common(target);
 		else
 			incpc();
 	}
@@ -2702,7 +2698,7 @@ void op_fracdenom(enum nilop op) {
 
 
 /*  Switching from an integer mode to real mode
- *  We convert the stack and LastX 
+ *  We convert the stack and LastX
  */
 static const unsigned short int StackRegMask[] = { 0x10f, 0x1ff };
 
@@ -2970,7 +2966,7 @@ static void specials(const opcode op) {
 			append_cmdline('E');
 		}
 	}
-#else			
+#else
 		if (is_intmode() || UState.fract || CmdLineDot == 2)
 			break;
 		if (!CmdLineEex && CmdLineLength < CMDLINELEN) {
@@ -3061,7 +3057,7 @@ static void specials(const opcode op) {
 }
 
 enum trig_modes get_trig_mode(void) {
-	if (State2.cmplx || XromFlags.xIN)
+	if (XromFlags.xIN)
 		return TRIG_RAD;
 	//if (State2.hyp)	return TRIG_RAD;
 	return (enum trig_modes) UState.trigmode;
@@ -3523,7 +3519,7 @@ long long int intMonadic(long long int x) {
 #ifndef REALBUILD
 		if (check_for_xrom_address(fp) != NULL)
 			bad_mode_error();
-		else 
+		else
 #endif
 		{
 			ullint_to_dn(&rx, vx);
@@ -3556,7 +3552,7 @@ long long int intDyadic(long long int y, long long int x) {
 #ifndef REALBUILD
 		if (check_for_xrom_address(fp) != NULL)
 			bad_mode_error();
-		else 
+		else
 #endif
 		{
 			ullint_to_dn(&rx, vx);	if (sx) dn_minus(&rx, &rx);
@@ -3648,7 +3644,6 @@ static void monadic(const opcode op)
 }
 
 static void monadic_cmplex(const opcode op) {
-	decNumber x, y, rx, ry;
 	unsigned int f;
 
 	process_cmdline_set_lift();
@@ -3656,19 +3651,7 @@ static void monadic_cmplex(const opcode op) {
 	f = argKIND(op);
 
 	if (f < NUM_MONADIC) {
-		if (! isNULL(monfuncs[f].mondcmplx)) {
-			FP_MONADIC_CMPLX fp = (FP_MONADIC_CMPLX) EXPAND_ADDRESS(monfuncs[f].mondcmplx);
-			if (dispatch_xrom(fp))
-				return;
-			else {
-				getXY(&x, &y);
-				fp(&rx, &ry, &x, &y);
-				setlastXY();
-				setXY(&rx, &ry);
-				set_was_complex();
-			}
-		} else
-			bad_mode_error();
+		bad_mode_error();
 	} else
 		illegal(op);
 }
@@ -3725,29 +3708,13 @@ static void dyadic(const opcode op) {
 }
 
 static void dyadic_cmplex(const opcode op) {
-	decNumber x1, y1, x2, y2, xr, yr;
 	unsigned int f;
 
 	process_cmdline_set_lift();
 
 	f = argKIND(op);
 	if (f < NUM_DYADIC) {
-		if (! isNULL(dyfuncs[f].dydcmplx)) {
-			FP_DYADIC_CMPLX fp = (FP_DYADIC_CMPLX) EXPAND_ADDRESS(dyfuncs[f].dydcmplx);
-			if (dispatch_xrom(fp))
-				return;
-			else {
-				getXYZT(&x1, &y1, &x2, &y2);
-
-				fp(&xr, &yr, &x2, &y2, &x1, &y1);
-
-				setlastXY();
-				lower2();
-				setXY(&xr, &yr);
-				set_was_complex();
-			}
-		} else
-			bad_mode_error();
+		bad_mode_error();
 	} else
 		illegal(op);
 }
@@ -3881,7 +3848,7 @@ long long int intDyadic(long long int y, long long int x)
 /*
  *  Universal dispatch function for niladic, monadic, dyadic and triadic functions, both real and complex variants.
  */
-static void universal_dispatch(const opcode op, const unsigned int operands, const unsigned int complex)
+static void universal_dispatch(const opcode op, const unsigned int operands)
 {
 	const int intmode = is_intmode();
 	volatile long long int ix; // declared volatile to avoid bogus warning about variable possibly being used uninitialized
@@ -3919,8 +3886,6 @@ illegal:
 			goto illegal;
 		if (intmode)
 			compact_pointer = (COMPACT_POINTER_TYPE)monfuncs[f].monint;
-		else if (complex)
-			compact_pointer = (COMPACT_POINTER_TYPE)monfuncs[f].mondcmplx;
 		else
 			compact_pointer = (COMPACT_POINTER_TYPE)monfuncs[f].mondreal;
 		break;
@@ -3930,8 +3895,6 @@ illegal:
 			goto illegal;
 		if (intmode)
 			compact_pointer = (COMPACT_POINTER_TYPE)dyfuncs[f].dydint;
-		else if (complex)
-			compact_pointer = (COMPACT_POINTER_TYPE)dyfuncs[f].dydcmplx;
 		else
 			compact_pointer = (COMPACT_POINTER_TYPE)dyfuncs[f].dydreal;
 		break;
@@ -4061,32 +4024,22 @@ finish_x:
 
 static void niladic(const opcode op)
 {
-	universal_dispatch(op, 0, 0);
+	universal_dispatch(op, 0);
 }
 
 static void monadic(const opcode op)
 {
-	universal_dispatch(op, 1, 0);
-}
-
-static void monadic_cmplex(const opcode op)
-{
-	universal_dispatch(op, 1, 1);
+	universal_dispatch(op, 1);
 }
 
 static void dyadic(const opcode op)
 {
-	universal_dispatch(op, 2, 0);
-}
-
-static void dyadic_cmplex(const opcode op)
-{
-	universal_dispatch(op, 2, 1);
+	universal_dispatch(op, 2);
 }
 
 static void triadic(const opcode op)
 {
-	universal_dispatch(op, 3, 0);
+	universal_dispatch(op, 3);
 }
 
 
@@ -4094,7 +4047,7 @@ static void triadic(const opcode op)
 
 
 /*
- *  Helper to check the maximum allowed register number, 
+ *  Helper to check the maximum allowed register number,
  *  depending on command flags and current allocation.
  *  This needs to be seperate because its called twice for indirect arguments
  */
@@ -4164,7 +4117,7 @@ static void rargs(const opcode op) {
 				// negative arguments address local registers or flags
 				arg = LOCAL_REG_BASE + arg;
 			}
-		} 
+		}
 		else {
 			// put the top bit back in
 			arg |= RARG_IND;
@@ -4177,7 +4130,7 @@ static void rargs(const opcode op) {
 	else if (argcmds[cmd].flag) {
 		if (LocalRegs == 0)
 			lim = NUMFLG - 1;
-		else 
+		else
 			lim = LOCAL_FLAG_BASE + MAX_LOCAL_DIRECT - 1;
 	}
 	if (arg > lim) {
@@ -4257,7 +4210,7 @@ static void multi(const opcode op) {
 /* Main dispatch routine that decodes the top level of the opcode and
  * goes to the appropriate lower level dispatch routine.
  */
-void xeq(opcode op) 
+void xeq(opcode op)
 {
 	REGISTER save[STACK_SIZE+2];
 	const unsigned short flags = UserFlags[regA_idx >> 4];
@@ -4378,7 +4331,7 @@ void xeq(opcode op)
 
 			set_running_off();
 		}
-	} 
+	}
 	reset_volatile_state();
 #ifdef INFRARED
 	Tracing = tracing;
@@ -4432,7 +4385,7 @@ void xeq_xrom(void) {
  * for a while.
  *
  */
-void xeqprog(void) 
+void xeqprog(void)
 {
 	int state = 0;
 
@@ -4473,7 +4426,7 @@ void xeqprog(void)
 
 /* Single step and back step routine
  */
-void xeq_sst_bst(int kind) 
+void xeq_sst_bst(int kind)
 {
 	opcode op;
 
@@ -4535,7 +4488,7 @@ void op_rs(enum nilop op) {
 }
 
 
-/* 
+/*
  *  The following needs to be done each time before any user input is processed.
  *  On the hardware, RAM is volatile and these pointers and structures need valid values!
  */
@@ -4622,9 +4575,9 @@ void cmdplotinit( unsigned int arg, enum rarg op )
 {
 	int sgnx, sgny;
 	int width = (int) getX_int_sgn( &sgnx );
-	int height = (int) get_reg_n_int_sgn( regY_idx, &sgny ); 
+	int height = (int) get_reg_n_int_sgn( regY_idx, &sgny );
 	unsigned char *p;
-	
+
 	if ( sgnx || width == 0 ) {
 		width = PAPER_WIDTH;
 	}
@@ -4819,7 +4772,7 @@ void cmdlocr(unsigned int arg, enum rarg op) {
  *  Argument:
  *      noLocals - bit 7
  *      out      - bits 4..5
- *      in       - bits 2..4		
+ *      in       - bits 2..4
  *      setLastX - bit 1
  *      complex  - bit 0
  *
@@ -4964,7 +4917,7 @@ void cmdxin(unsigned int arg, enum rarg op) {
 					setRegister(regX_idx + i, &const_NaN);
 				// Early exit of routine
 				cmdxout(0, RARG_XROM_OUT);
-			} 
+			}
 			else
 				err(ERR_DOMAIN);	// this will do all the cleanup
 			return;
@@ -5022,7 +4975,7 @@ void cmdxout(unsigned int arg, enum rarg op) {
 	else {
 		while (i < 0) {
 			// more to consume then to push back
-			lower();	
+			lower();
 			++i;
 		}
 	}
@@ -5063,7 +5016,7 @@ void cmdxout(unsigned int arg, enum rarg op) {
 	// Copy back local data
 	if (XromFlags.copyLocals) {
 		i = local_regs();
-		num_locals = i < num_locals ? i : num_locals; 
+		num_locals = i < num_locals ? i : num_locals;
 		*flag_word(LOCAL_FLAG_BASE, NULL) = flags;
 		if (intm) {
 			// not used
@@ -5217,7 +5170,7 @@ void cmdregs(unsigned int arg, enum rarg op) {
 
 	if (is_dblmode()) {
 		// DP register length 16 bytes
-		length = (arg << 4); 
+		length = (arg << 4);
 		// We need additional room for lettered registers
 		arg = (arg << 1) + STACK_SIZE + EXTRA_REG;
 	}
@@ -5232,11 +5185,11 @@ void cmdregs(unsigned int arg, enum rarg op) {
 		length = (arg << 3);
 	}
 	distance = NumRegs - arg;
-	
+
 	// Move return stack, check for room
 	if (move_retstk(distance << 2))
 		return;
-	
+
 	// Move register contents, including the statistics registers
 	xcopy((unsigned short *)(Regs + TOPREALREG - arg)     - SizeStatRegs,
 	      (unsigned short *)(Regs + TOPREALREG - NumRegs) - SizeStatRegs,
@@ -5407,5 +5360,3 @@ int init_34s(void)
 #ifdef GNUC_POP_ERROR
 #pragma GCC diagnostic pop
 #endif
-
-

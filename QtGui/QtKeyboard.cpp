@@ -31,8 +31,6 @@ QtKeyboard::QtKeyboard(const QtSkin& aSkin, bool anUseHShiftClick, bool anAlways
 	  showToolTips(aShowToolTips),
 	  currentKeyHShifted(false),
 	  autoRepeat(false),
-	  fShiftLocked(false),
-	  gShiftLocked(false),
 	  hShiftLocked(false)
 {
 	setSkin(aSkin);
@@ -183,15 +181,7 @@ bool QtKeyboard::processDoubleClickEvent(const QMouseEvent& aMouseEvent)
 bool QtKeyboard::setShifts(int aCode)
 {
 	bool* shiftChanged=NULL;
-	if(aCode==F_CODE)
-	{
-		shiftChanged=&fShiftLocked;
-	}
-	else if(aCode==G_CODE)
-	{
-		shiftChanged=&gShiftLocked;
-	}
-	else if(aCode==H_CODE)
+	if(aCode==H_CODE)
 	{
 		shiftChanged=&hShiftLocked;
 	}
@@ -199,12 +189,8 @@ bool QtKeyboard::setShifts(int aCode)
 	if(shiftChanged!=NULL)
 	{
 		bool newValue=!*shiftChanged;
-		fShiftLocked=false;
-		gShiftLocked=false;
 		hShiftLocked=false;
 		*shiftChanged=newValue;
-		set_fshift_locked(fShiftLocked);
-		set_gshift_locked(gShiftLocked);
 		set_hshift_locked(hShiftLocked);
 		return true;
 	}
@@ -428,7 +414,7 @@ QtKeyCode QtKeyboard::findKeyCode(const QPoint& aPoint) const
 			{
 				bool hShifted=false;
 				int code=(*keyIterator)->getCode();
-				if(code!=F_CODE && code!=G_CODE && code!=H_CODE && useHShiftClick && (alwaysUseHShiftClick || is_not_shifted()))
+				if(code!=H_CODE && useHShiftClick && (alwaysUseHShiftClick || is_not_shifted()))
 				{
 					QRect hRect(keyRect);
 					hRect.setTop(keyRect.bottom()-hShiftHeight);
@@ -466,15 +452,7 @@ void QtKeyboard::paint(QtBackgroundImage& aBackgroundImage, QPaintEvent& aPaintE
 {
 	Q_UNUSED(aPaintEvent);
 
-	if(fShiftLocked)
-	{
-		invertKeycode(F_CODE, aBackgroundImage);
-	}
-	else if(gShiftLocked)
-	{
-		invertKeycode(G_CODE, aBackgroundImage);
-	}
-	else if(hShiftLocked)
+	if(hShiftLocked)
 	{
 		invertKeycode(H_CODE, aBackgroundImage);
 	}
@@ -563,4 +541,3 @@ void add_heartbeat_adapter(int key)
 }
 
 }
-

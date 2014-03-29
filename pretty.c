@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -275,7 +275,7 @@ static void uprintf(FILE *f, int mode, const char *fmt, ...)
 static void output_xref_table(FILE *f) {
 	int i, j;
 	const char *p;
-	
+
 	fprintf(f, "By Command\n");
 	qsort(alias_table, alias_tbl_n, sizeof(struct xref_s), &xref_cmd_compare);
 	for (i = 0; i < alias_tbl_n; ++i) {
@@ -334,7 +334,7 @@ static void dump_one_opcode(FILE *f, int c, const char *cmdname, enum eCmdType t
 		if ((cmdalias != CNULL || strcmp(cmdname,cmdpretty) != 0)
 		    && (! isDBL(c) || c == (OP_DBL | DBL_ALPHA))
 		    && ! (attributes & E_ATTR_XROM)
-		   ) 
+		   )
 		{
 			alias_table[alias_tbl_n].name = strdup(cmdname);
 			alias_table[alias_tbl_n].pretty = strdup(cmdpretty);
@@ -374,7 +374,7 @@ void dump_opcodes(FILE *f, int xref) {
 #endif
 				dump_one_opcode(f, c, cmdname, E_CMD_MULTI, cmdpretty, E_ALIAS, multicmds[cmd].alias, 0, xref);
 
-		} 
+		}
 		else if (isRARG(c)) {
 			const unsigned int cmd = RARG_CMD(c);
 			unsigned int limit;
@@ -437,33 +437,23 @@ void dump_opcodes(FILE *f, int xref) {
 					}
 				}
 				continue;
-			} 
-			else if (cmd == RARG_CONST || cmd == RARG_CONST_CMPLX) {
+			}
+			else if (cmd == RARG_CONST) {
 				const int n = c & 0xff;
 				const char *pre = n == OP_PI ? "" : "# ";
 				const char *alias = cnsts[n].alias;
 
-				if (xref && cmd == RARG_CONST_CMPLX)
-					continue;
 				if (n == OP_ZERO || n == OP_ONE)
 					continue;
 				if (strchr(cmdpretty, '[') == NULL)
 					alias = NULL;
-				if (cmd == RARG_CONST_CMPLX) {
-					sprintf(temp2, "\024# %s", cn);
-					sprintf(temp, "[cmplx]# %s", cmdpretty);
-					sprintf(buf, "c%s%s", pre, alias ? alias : cmdpretty);
-					dump_one_opcode(f, c, temp2, E_CMD_CMD, temp, E_ALIAS, buf, 0, xref);
-				}
-				else {
-					sprintf(temp2, "# %s", cn);
-					sprintf(temp, "# %s", cmdpretty);
-					if (alias)
-						sprintf(buf, "%s%s", pre, alias);
-					dump_one_opcode(f, c, temp2, E_CMD_CMD, temp, E_ALIAS, alias ? buf : CNULL, 0, xref);
-				}
+                                sprintf(temp2, "# %s", cn);
+                                sprintf(temp, "# %s", cmdpretty);
+                                if (alias)
+                                        sprintf(buf, "%s%s", pre, alias);
+                                dump_one_opcode(f, c, temp2, E_CMD_CMD, temp, E_ALIAS, alias ? buf : CNULL, 0, xref);
 				continue;
-			} 
+			}
 			else if (cmd == RARG_CONV) {
 				strcpy(temp, cmdpretty);
 				q = strstr(temp, "[->]");
@@ -497,13 +487,13 @@ void dump_opcodes(FILE *f, int xref) {
 			}
 			else if (c == RARG(RARG_SWAPX, regY_idx)) {
 				sprintf(temp, "%s Y", cn);
-				sprintf(buf, "%s Y", cmdpretty); 
+				sprintf(buf, "%s Y", cmdpretty);
 				dump_one_opcode(f, c, temp, E_CMD_CMD, buf, E_ALIAS, "x<>y", E_ATTR_NO_CMD, xref);
 				dump_one_opcode(f, c, temp, E_CMD_CMD, buf, E_ALIAS, "SWAP", E_ATTR_NO_CMD, xref);
-			} 
+			}
 			else if (c == RARG(RARG_CSWAPX, regZ_idx)) {
 				sprintf(temp, "%s Z", cn);
-				sprintf(buf, "%s Z", cmdpretty); 
+				sprintf(buf, "%s Z", cmdpretty);
 				dump_one_opcode(f, c, temp, E_CMD_CMD, buf, E_ALIAS, "cSWAP", E_ATTR_NO_CMD, xref);
 			}
 			if ((c & 0xff) != 0)
@@ -522,9 +512,9 @@ void dump_opcodes(FILE *f, int xref) {
 				limit |= E_ATTR_LOCAL;
 			if (argcmds[cmd].cmplx)
 				limit |= E_ATTR_COMPLEX;
-			if (cmd == RARG_MODE_SET 
-			 || cmd == RARG_MODE_CLEAR 
-			 || cmd == RARG_XROM_IN 
+			if (cmd == RARG_MODE_SET
+			 || cmd == RARG_MODE_CLEAR
+			 || cmd == RARG_XROM_IN
 			 || cmd == RARG_XROM_OUT
 #ifndef INCLUDE_INDIRECT_BRANCHES
 		       //|| cmd == RARG_iSKIP
@@ -587,27 +577,9 @@ void dump_opcodes(FILE *f, int xref) {
 				continue;
 
 			case KIND_CMON:
-				if (d < NUM_MONADIC && ! isNULL(monfuncs[d].mondcmplx)) {
-					if (cmdname[0] == COMPLEX_PREFIX)
-						break;
-					p = monfuncs[d].alias;
-					sprintf(temp2, "\024%s", cn);
-					sprintf(temp, "[cmplx]%s", cmdpretty);
-					sprintf(buf, "c%s", p ? p : cmdpretty);
-					dump_one_opcode(f, c, temp2, E_CMD_CMD, temp, E_ALIAS, buf, 0, xref);
-				}
 				continue;
 
 			case KIND_CDYA:
-				if (d < NUM_DYADIC && ! isNULL(dyfuncs[d].dydcmplx)) {
-					if (cmdname[0] == COMPLEX_PREFIX)
-						break;
-					p = dyfuncs[d].alias;
-					sprintf(temp2, "\024%s", cn);
-					sprintf(temp, "[cmplx]%s", cmdpretty);
-					sprintf(buf, "c%s", p ? p : cmdpretty);
-					dump_one_opcode(f, c, temp2, E_CMD_CMD, temp, E_ALIAS, buf, 0, xref);
-				}
 				continue;
 
 			case KIND_NIL:
@@ -637,4 +609,3 @@ void dump_opcodes(FILE *f, int xref) {
 	if (xref)
 		output_xref_table(f);
 }
-

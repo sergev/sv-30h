@@ -542,7 +542,7 @@ static void annunciators(void) {
 	}
 	else if (!yreg_enabled
 #ifdef SHIFT_AND_CMPLX_SUPPRESS_YREG
-		 || shift_char != ' ' || State2.cmplx
+		 || shift_char != ' '
 #endif
 		 ) {
 // The stack size indicator is displayed on the right if date mode indication is enabled
@@ -564,17 +564,6 @@ static void annunciators(void) {
 		}
 		else {
 			*p++ = 'D';
-		}
-
-		if (State2.cmplx) {
-			*p++ = ' ';
-			*p = '\024';
-			goto skip;
-		}
-		if (State2.arrow) {
-			*p++ = ' ';
-			*p = '\015';
-			goto skip;
 		}
 
 		if (shift_char == ' ' && (State2.wascomplex || (rp_prefix && RectPolConv != 0))) {
@@ -622,13 +611,7 @@ static void annunciators(void) {
 	}
 	else { // yreg_enabled
 #ifndef SHIFT_AND_CMPLX_SUPPRESS_YREG
-		if (State2.cmplx) {
-			*p++ = '\007';
-			*p++ = '\344';
-			*p++ = shift_char;
-			q = "\024";
-		}
-		else if (shift_char != ' ') {
+		if (shift_char != ' ') {
 			*p++ = '\007';
 			*p++ = '\307';
 			*p++ = shift_char;
@@ -668,9 +651,7 @@ static void annunciators(void) {
 		p = scopy(p, q);
 	no_copy:
 
-		if (State2.arrow) {
-			scopy(p, "\007\204\006\015");
-		} else if (State2.runmode) {
+		if (State2.runmode) {
 			decNumber y;
 display_yreg:
 			/* This is a bit convoluted.  ShowRegister is the real portion being shown.  Normally
@@ -704,9 +685,6 @@ display_yreg:
 					goto skip;
 				}
 				if (yreg_fract && UState.fract
-#ifndef SHIFT_AND_CMPLX_SUPPRESS_YREG
-				    && !State2.cmplx
-#endif
 #ifdef ANGLES_NOT_SHOWN_AS_FRACTIONS
 				    && !(rp_prefix && RectPolConv == 1)
 #endif
@@ -1315,7 +1293,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 	set_separator_decimal_modes();
 #if defined(INCLUDE_YREG_CODE)
 	if ( !res ) { // no hms or fraction displays for the dot matrix display
-		if (!State2.smode && ! State2.cmplx) {
+		if (! State2.smode) {
 			if (State2.hms) {
 				set_x_hms(z, res);
  				return;
@@ -1327,7 +1305,7 @@ void set_x_dn(decNumber *z, char *res, int *display_digits) {
 		}
 	}
 #else
-	if (!State2.smode && ! State2.cmplx && ! State2.wascomplex) {
+	if (!State2.smode && ! State2.wascomplex) {
 		if (State2.hms) {
 			set_x_hms(z, res);
 			State2.hms = 0;
@@ -1924,10 +1902,6 @@ void display(void) {
 	reset_disp();
 
 	xset(buf, '\0', sizeof(buf));
-	if (State2.cmplx  && !cata) {
-		*bp++ = COMPLEX_PREFIX;
-		set_status(buf);
-	}
 	if (State2.version) {
 		char vers[VERS_SVN_OFFSET + 5] = VERS_DISPLAY;
 		set_digits_string("pAULI, WwALtE", 0);
@@ -1992,8 +1966,6 @@ void display(void) {
 
 		bp = scopy(bp, "\177\006\006");
 		p = catcmd(op, b2);
-		if (*p != COMPLEX_PREFIX && State2.cmplx)
-			*bp++ = COMPLEX_PREFIX;
 		bp = scopy(bp, p);
 		if (cata == CATALOGUE_CONST || cata == CATALOGUE_COMPLEX_CONST) {
 			// State2.disp_small = 1;
@@ -2110,7 +2082,7 @@ void display(void) {
 		}
 		else
 #endif
-		if (cur_shift() != SHIFT_N || State2.cmplx || State2.arrow)
+		if (cur_shift() != SHIFT_N)
 			annuc = 1;
 		goto nostk;
 	}

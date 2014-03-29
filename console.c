@@ -120,7 +120,7 @@ static void rarg_values(const opcode c, int l) {
 			while (l-- > 0)
 				putchar(' ');
 			printf("%c %s", (idx & 1)?'*':'/', decimal64ToString(&CONSTANT_CONV(idx/2), bf));
-		} else if (cmd == RARG_CONST || cmd == RARG_CONST_CMPLX) {
+		} else if (cmd == RARG_CONST) {
 			while (l-- > 0)
 				putchar(' ');
 			printf("%s", decimal64ToString((decimal64 *) get_const(c & 0x7f, 0), bf));
@@ -423,9 +423,9 @@ static void dump_cmd_op(unsigned int op, unsigned int *n, int silent) {
 	if (strcmp(p, "???") == 0)
 		return;
 	if (! isRARG(op)) {
-		if (opk == KIND_CMON && isNULL(monfuncs[opa].mondcmplx))
+		if (opk == KIND_CMON)
 			return;
-		if (opk == KIND_CDYA && isNULL(dyfuncs[opa].dydcmplx))
+		if (opk == KIND_CDYA)
 			return;
 		if (opk == KIND_MON && isNULL(monfuncs[opa].mondreal) && isNULL(monfuncs[opa].monint))
 			return ;
@@ -438,8 +438,6 @@ static void dump_cmd_op(unsigned int op, unsigned int *n, int silent) {
 	pre = "";
 	if (opk == KIND_CMON || opk == KIND_CDYA)
 		pre = "[cmplx]";
-	else if (isRARG(op) && RARG_CMD(op) == RARG_CONST_CMPLX)
-		pre = "[cmplx]# ";
 	else if (isRARG(op) && RARG_CMD(op) == RARG_CONST)
 		pre = "# ";
 	else if (isRARG(op) && RARG_CMD(op) == RARG_ALPHA)
@@ -459,7 +457,7 @@ static unsigned int dump_commands(int silent) {
 		for (j=0; j<opcode_breaks[i]; j++)
 			dump_cmd_op((i<<KIND_SHIFT) + j, &n, silent);
 	for (i=0; i<NUM_RARG; i++) {
-		if (i == RARG_CONST || i == RARG_CONST_CMPLX) {
+		if (i == RARG_CONST) {
 			for (j=0; j<NUM_CONSTS_CAT-1; j++)
 				dump_cmd_op(RARG(i, j), &n, silent);
 			dump_cmd_op(RARG(i, OP_PI), &n, silent);
@@ -629,14 +627,12 @@ int main(int argc, char *argv[]) {
 
 		for (n=c=0; c<NUM_MONADIC; c++) {
 			if (monfuncs[c].mondreal != NULL) n++;
-			if (monfuncs[c].mondcmplx != NULL) n++;
 			if (monfuncs[c].monint != NULL) n++;
 		}
 		printf("\tmonadic commands %d with %d functions\n", NUM_MONADIC, n);
 
 		for (n=c=0; c<NUM_DYADIC; c++) {
 			if (dyfuncs[c].dydreal != NULL) n++;
-			if (dyfuncs[c].dydcmplx != NULL) n++;
 			if (dyfuncs[c].dydint != NULL) n++;
 		}
 		printf("\tdyadic commands %d with %d functions\n", NUM_DYADIC, n);

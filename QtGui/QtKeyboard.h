@@ -28,8 +28,6 @@
 class QtBackgroundImage;
 
 #define KEYBOARD_BUFFER_SIZE 16
-#define F_CODE 9
-#define G_CODE 10
 #define H_CODE 11
 
 
@@ -112,7 +110,7 @@ private:
     bool showToolTips;
     bool currentKeyHShifted;
     bool autoRepeat;
-    bool fShiftLocked, gShiftLocked, hShiftLocked;
+    bool hShiftLocked;
     QTimer* hShiftTimer;
     QTimer* autoRepeatTimer;
     QHash<int, const QtKey*> keysByCode;

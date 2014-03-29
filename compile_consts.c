@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -378,8 +378,8 @@ struct _constsml conversions[] = {
 	CONV("km",	"pc",		"KM_PC",	"3.085678E13"),		// source: NIST
 	CONV("km",	"AU",		"KM_AU",	"149597900"),		// source: NIST, IAU 2009 gives 1.49597870700E11
 	CONV("km",	"nmi",		"KM_NMI",	"1.852"),		// source: NIST
-//	CONV("m\232",	"square",	"M_SQUARE",	"9.290304"),		// derived: 
-//	CONV("m\232",	"perch",	"M_PERCH",	"25.29285264"),		// derived: 
+//	CONV("m\232",	"square",	"M_SQUARE",	"9.290304"),		// derived:
+//	CONV("m\232",	"perch",	"M_PERCH",	"25.29285264"),		// derived:
 	CONV("ha",	"acres",	"HA_ACREUK",	"0.40468564224"),	// derived: 43560 square feet
 	CONV("ha",	"acreUS",	"HA_ACREUS",	"0.4046873"),		// source: NIST
 	CONV("N",	"lbf",		"N_LBF",	"4.448222"),		// source: NIST
@@ -531,8 +531,8 @@ static void put_name(FILE *f, const char *name) {
 }
 
 /*
- 	const_small_tbl(f, 
-				"CONSTANT", "CONST", "RARG_CONST", "RARG_CONST_CMPLX",
+ 	const_small_tbl(f,
+				"CONSTANT", "CONST", "RARG_CONST",
 */
 static void const_small_tbl(FILE *f) {
 	int i, j, s_index, d_index;
@@ -551,7 +551,7 @@ static void const_small_tbl(FILE *f) {
 	ctx.round = DEC_ROUND_HALF_EVEN;
 
 	for (i=0; constsml[i].val != NULL && constsml[i].n2[0] == '\0'; i++);	// user visible
-	for (j=i; constsml[j].val != NULL; j++);				// system	
+	for (j=i; constsml[j].val != NULL; j++);				// system
 	fprintf(fh,	"\nstruct cnsts {\n"
 			"\tunsigned char index;\n"
 			"\tconst char cname[CONST_NAMELEN];\n"
@@ -567,7 +567,6 @@ static void const_small_tbl(FILE *f) {
 			"#define CONSTANT(n)     ((decimal64 *)  get_const(n, 0))\n"
 			"#define CONSTANT_DBL(n) ((decimal128 *) get_const(n, 1))\n\n"
 			"#define CONST(n)        RARG(RARG_CONST, n)\n"
-			"#define CONST_CMPLX(n)  RARG(RARG_CONST_CMPLX, n)\n\n"
 			"enum {\n",
 		i, j);
 
@@ -758,7 +757,7 @@ static void const_small(FILE *fh) {
 	fclose(f);
 }
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
 	char tmp[ FILENAME_MAX ] = "";
 	if ( argc > 1 ) {

@@ -130,12 +130,7 @@ void QtBackgroundImage::showCatalogMenu(bool force)
 			char buf[41];
 			catcmd(op, buf);
 			menuText[i]=new QString(buf);
-	        if(is_complex_mode() && buf[0]!=get_complex_prefix())
-	        {
-	            memmove(buf+1, buf, 40);
-	            buf[0]=get_complex_prefix();
-	        }
-	        int x=screen.getCatalogMenuMargin();
+                        int x=screen.getCatalogMenuMargin();
 			pixmaps[i]=new QPixmap(width, height);
 			highlightedPixmaps[i]=new QPixmap(width, height);
 			// This block is just so the painter is deleted at the end and we can then set the mask

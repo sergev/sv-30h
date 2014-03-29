@@ -1,15 +1,15 @@
 /* This file is part of 34S.
- * 
+ *
  * 34S is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * 34S is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with 34S.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -37,23 +37,11 @@ static const char *prt_triadic(const unsigned int f, char *instr) {
 	return "???";
 }
 
-static const char *prt_cmplx(int add_prefix, const char *name, char *instr) {
-	char *p = instr;
-	if (add_prefix)
-		*p++ = COMPLEX_PREFIX;
-	sncopy(p, name, NAME_LEN);
-	return instr;
-}
-
 static const char *prt_monadic_cmplx(const unsigned int f, char *instr) {
-	if (f < NUM_MONADIC && ! isNULL(monfuncs[f].mondcmplx))
-		return prt_cmplx(! isNULL(monfuncs[f].mondreal), monfuncs[f].fname, instr);
 	return "???";
 }
 
 static const char *prt_dyadic_cmplx(const unsigned int f, char *instr) {
-	if (f < NUM_DYADIC && ! isNULL(dyfuncs[f].dydcmplx))
-		return prt_cmplx(! isNULL(dyfuncs[f].dydreal), dyfuncs[f].fname, instr);
 	return "???";
 }
 
@@ -171,7 +159,7 @@ static const char *prt_rargs(const opcode op, char *instr) {
 
 	if (cmd == RARG_ALPHA) {
 		*scopy(instr, "\240" SPACE_AFTER_CMD) = arg;
-	} 
+	}
 	else if (cmd >= NUM_RARG)
 		return "???";
 
@@ -182,8 +170,6 @@ static const char *prt_rargs(const opcode op, char *instr) {
 		p = instr;
 		switch(cmd) {
 
-		case RARG_CONST_CMPLX:
-			*p++ = COMPLEX_PREFIX;
 		case RARG_CONST:
 			sncopy(scopy(p, "#" SPACE_AFTER_CMD), cnsts[arg].cname, CONST_NAMELEN);
 			return instr;
@@ -214,7 +200,7 @@ static const char *prt_rargs(const opcode op, char *instr) {
 				goto print_reg;
 			}
 		}
-	} 
+	}
 	else {
 		if (!argcmds[cmd].indirectokay)
 			return "???";
@@ -288,11 +274,11 @@ const char *catcmd(opcode op, char instr[16]) {
 				return prt_conv(op & RARG_MASK, instr);
 			}
 #if defined(INCLUDE_USER_CATALOGUE) && !defined(COMPILE_CATALOGUES)
-			else if (f == RARG_CONST || f == RARG_CONST_CMPLX || f == RARG_ALPHA) {
+			else if (f == RARG_CONST || f == RARG_ALPHA) {
 				return prt(op, instr);
 			}
 #else
-			else if (f == RARG_CONST || f == RARG_CONST_CMPLX) {
+			else if (f == RARG_CONST) {
 				const unsigned int arg = op & RARG_MASK;
 				if (arg < NUM_CONSTS)
 					return sncopy(instr, cnsts[arg].cname, CONST_NAMELEN);
